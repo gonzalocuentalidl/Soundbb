@@ -118,7 +118,7 @@ textarea.code{width:100%;resize:none;display:block;margin-top:8px;color:var(--in
     <div class="card hide" id="bPair">
       <h2>Emparejar con el móvil de padres</h2>
       <ol>
-        <li>Pulsa <b>Crear código</b> y envíaselo al otro móvil.</li>
+        <li>Pulsa <b>Crear código</b> (te pedirá permiso para el micrófono) y envíaselo al otro móvil.</li>
         <li>Pega aquí el código de respuesta que te devuelva.</li>
       </ol>
       <div class="row"><button class="btn primary" id="bCreate">Crear código</button></div>
@@ -290,6 +290,7 @@ function stopMic(){
   S.mic=S.sendTrack=S.an=null;S.lvl=-90;resetLink();
 }
 async function createOffer(){
+  if(!S.mic){await startMic();if(!S.mic)return;}
   setMsg('bMsg','Creando código…');
   try{
     var pc=newPC();
@@ -406,7 +407,7 @@ function renderParent(){
 
 /* ---------- interfaz común ---------- */
 function render(){
-  show('bPair',!!S.mic&&!S.connected);
+  show('bPair',!S.connected);
   var mb=$('micBtn');
   if(!S.mic){mb.innerHTML='Activar<br>micrófono';mb.setAttribute('aria-pressed','false');}
   else if(!S.connected){mb.innerHTML='Micrófono<br>activo';mb.setAttribute('aria-pressed','true');}
