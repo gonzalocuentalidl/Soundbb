@@ -26,10 +26,10 @@ Cómo funciona: el PIN solo sirve para que los dos móviles se encuentren a trav
 ## Lista de pruebas en iPhone (lo que hay que validar)
 
 - [ ] Emparejan con el PIN en la misma WiFi.
-- [ ] Móvil del bebé enchufado, pantalla encendida: ¿el audio llega con claridad a 10 m y con una pared?
+- [ ] Móvil del bebé enchufado: ¿el audio llega con claridad a 10 m y con una pared?
 - [ ] Ajusta la **sensibilidad** (Ajustes) hasta que el ruido de fondo no dispare el envío.
 - [ ] Móvil de padres con la pantalla bloqueada: ¿sigue sonando? (Safari puede cortar el audio en segundo plano; anota a los cuántos segundos.)
-- [ ] Móvil del bebé con la pantalla bloqueada: ¿sigue escuchando? Lo normal es que **no**; por eso la página mantiene la pantalla encendida.
+- [ ] Móvil del bebé con la pantalla bloqueada: ¿sigue escuchando? En las pruebas **sí** siguió enviando; por eso la pantalla se bloquea sola, y hay un interruptor *Mantener la pantalla encendida* en Ajustes si hiciera falta.
 - [ ] Apaga el WiFi del bebé: ¿salta la alarma en padres en menos de 10 s?
 - [ ] Consumo de batería de padres tras 1 hora.
 

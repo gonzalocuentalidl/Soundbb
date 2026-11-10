@@ -113,9 +113,10 @@ input.pin-in{width:100%;font-size:30px;text-align:center;letter-spacing:.2em;fon
         <div class="read"><span>Nivel <b id="bDb">−90 dB</b></span></div>
         <div class="read" style="margin-top:6px"><span>Sensibilidad <b id="thrVal">−45 dB</b></span></div>
         <p class="foot">Se cambia desde el móvil de padres.</p>
+        <label class="chk" style="display:flex;gap:10px;align-items:center;font-weight:500;margin-top:14px"><input type="checkbox" id="bAwake" style="width:22px;height:22px;accent-color:var(--accent)"> Mantener la pantalla encendida</label>
         <div class="row"><button class="btn" id="bRepair">Emparejar de nuevo</button></div>
       </details>
-      <p class="foot">Deja este móvil cargando, con la pantalla encendida y cerca de la cuna.</p>
+      <p class="foot">Si puedes, deja este móvil cargando y cerca de la cuna. La pantalla se bloquea sola para ahorrar batería.</p>
     </div>
     <div class="card hide" id="bPair">
       <h2>Emparejar con el móvil de padres</h2>
@@ -141,6 +142,7 @@ input.pin-in{width:100%;font-size:30px;text-align:center;letter-spacing:.2em;fon
         <input type="range" id="pThr" min="-85" max="-15" value="-45">
         <p class="foot">Más a la izquierda = más sensible. Compara con el nivel del cuarto de arriba.</p>
         <div class="read" style="margin-top:6px"><span id="pAud">Audio: —</span></div>
+        <label class="chk" style="display:flex;gap:10px;align-items:center;font-weight:500;margin-top:14px"><input type="checkbox" id="pAwake" style="width:22px;height:22px;accent-color:var(--accent)"> Mantener la pantalla encendida</label>
         <div class="row"><button class="btn" id="pRepair">Emparejar de nuevo</button></div>
       </details>
     </div>
@@ -165,7 +167,7 @@ var SIGNAL=window.VB_SIGNAL||'https://ntfy.sh/'; /* servicio público gratuito q
 var SILENT='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
 var S={pc:null,dc:null,mic:null,sendTrack:null,ctx:null,an:null,buf:null,lvl:-90,lastLoud:0,paused:false,
   connected:false,thr:-60,hold:5000,lastSend:0,wake:null,remote:null,audio:null,
-  rlvl:-90,lastMsg:0,lostOn:false,lastSoundAt:null,beepT:null,mode:'baby',es:null,esTimer:null,bytes:0,statT:0,thrTouch:0,lastActive:false};
+  rlvl:-90,lastMsg:0,lostOn:false,lastSoundAt:null,beepT:null,mode:'baby',es:null,esTimer:null,bytes:0,statT:0,thrTouch:0,lastActive:false,awake:false};
 window.__vb=S;
 
 /* ---------- utilidades ---------- */
@@ -213,6 +215,7 @@ function gathered(pc){
   });
 }
 async function keepAwake(){
+  if(!S.awake)return;
   try{if('wakeLock' in navigator){S.wake=await navigator.wakeLock.request('screen');}}catch(e){}
 }
 document.addEventListener('visibilitychange',function(){
@@ -488,6 +491,15 @@ function init(){
   $('pTapBtn').addEventListener('click',function(){
     if(S.ctx)S.ctx.resume().catch(function(){});
     if(S.audio){S.audio.play().then(function(){show('pTap',false);}).catch(function(){});}
+  });
+  try{S.awake=localStorage.getItem('vb-awake')==='1';}catch(e){}
+  ['bAwake','pAwake'].forEach(function(id){
+    $(id).checked=S.awake;
+    $(id).addEventListener('change',function(){
+      S.awake=this.checked;$('bAwake').checked=$('pAwake').checked=S.awake;
+      try{localStorage.setItem('vb-awake',S.awake?'1':'0');}catch(e){}
+      if(S.awake){keepAwake();}else if(S.wake){try{S.wake.release();}catch(e){}S.wake=null;}
+    });
   });
   ['bRepair','pRepair','lostRepair'].forEach(function(id){$(id).addEventListener('click',resetLink);});
   $('tabBaby').addEventListener('click',function(){setMode('baby');});
