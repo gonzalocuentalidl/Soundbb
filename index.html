@@ -82,6 +82,8 @@ textarea.code{width:100%;resize:none;display:block;margin-top:8px;color:var(--in
 .msg{font-size:13.5px;color:var(--muted);margin:10px 0 0;min-height:1em}
 .msg.err{color:var(--alert);font-weight:600}
 .banner .btn{margin-top:10px;background:#fff;color:#14201a;border-color:#fff}
+.pin{font-family:var(--font-mono);font-size:46px;font-weight:500;letter-spacing:.18em;text-align:center;margin:16px 0 6px;color:var(--accent)}
+input.pin-in{width:100%;font-size:30px;text-align:center;letter-spacing:.2em;font-family:var(--font-mono);background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:6px}
 </style>
 </head>
 <body>
@@ -89,7 +91,7 @@ textarea.code{width:100%;resize:none;display:block;margin-top:8px;color:var(--in
   <div class="top">
     <div class="brand">
       <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="9" fill="none" stroke="var(--accent)" stroke-width="3"/><path d="M29 20c6 0 8 8 4 12" fill="none" stroke="var(--accent)" stroke-width="3" stroke-dasharray="1 5" stroke-linecap="round"/><path d="M11 20c-6 0-8-8-4-12" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/></svg>
-      <div><h1>Vigilabebés</h1><p class="sub">Dos móviles, un enlace, sin servidor.</p></div>
+      <div><h1>Vigilabebés</h1><p class="sub">Dos móviles, un PIN, sin cuentas.</p></div>
     </div>
   </div>
 
@@ -117,18 +119,9 @@ textarea.code{width:100%;resize:none;display:block;margin-top:8px;color:var(--in
     </div>
     <div class="card hide" id="bPair">
       <h2>Emparejar con el móvil de padres</h2>
-      <ol>
-        <li>Pulsa <b>Crear código</b> (te pedirá permiso para el micrófono) y envíaselo al otro móvil.</li>
-        <li>Pega aquí el código de respuesta que te devuelva.</li>
-      </ol>
-      <div class="row"><button class="btn primary" id="bCreate">Crear código</button></div>
-      <div id="bOfferWrap" class="hide">
-        <textarea class="code" id="bOffer" rows="3" readonly aria-label="Código de este móvil"></textarea>
-        <div class="row"><button class="btn" id="bCopy">Copiar</button><button class="btn" id="bShare">Compartir</button></div>
-        <label for="bAnswer">Código de respuesta</label>
-        <textarea class="code" id="bAnswer" rows="3" placeholder="Pega aquí el código z1… de respuesta"></textarea>
-        <div class="row"><button class="btn primary" id="bConnect">Conectar</button></div>
-      </div>
+      <p class="foot" style="margin-top:0">Pulsa el botón: saldrá un PIN de 6 cifras. Escríbelo en el móvil de padres.</p>
+      <div class="row"><button class="btn primary" id="bCreate">Crear PIN</button></div>
+      <div class="pin hide" id="bPin" aria-live="polite">------</div>
       <p class="msg" id="bMsg" role="status"></p>
     </div>
   </section>
@@ -139,34 +132,25 @@ textarea.code{width:100%;resize:none;display:block;margin-top:8px;color:var(--in
     <div class="card hide" id="pMain">
       <div class="status"><span class="dot" id="pDot"></span><span id="pStatus">Conectado · escuchando</span></div>
       <div class="meter" id="pMeter" aria-hidden="true"></div>
-      <p class="foot" id="pLast" style="text-align:center">Último sonido: nunca</p>
-      <label for="vol">Volumen</label>
-      <input type="range" id="vol" min="0" max="100" value="70">
+      <p class="foot" id="pLast" style="text-align:center">Último sonido: ninguno aún</p>
+      <div class="row hide" id="pTap"><button class="btn primary" id="pTapBtn" style="width:100%">Toca para activar el sonido</button></div>
+      <p class="foot" style="text-align:center">El volumen se sube con los botones del iPhone.</p>
       <details><summary>Ajustes</summary>
         <div class="read"><span>Nivel <b id="pDb">−90 dB</b></span></div>
+        <div class="read" style="margin-top:6px"><span id="pAud">Audio: —</span></div>
         <div class="row"><button class="btn" id="pRepair">Emparejar de nuevo</button></div>
       </details>
     </div>
     <div class="card" id="pPair">
       <h2>Emparejar con el móvil del bebé</h2>
-      <ol>
-        <li>En el móvil del bebé, activa el micrófono y pulsa <b>Crear código</b>.</li>
-        <li>Pega ese código aquí y pulsa <b>Conectar</b>.</li>
-        <li>Copia el código de respuesta y pégalo en el móvil del bebé.</li>
-      </ol>
-      <label for="pCode">Código del bebé</label>
-      <textarea class="code" id="pCode" rows="3" placeholder="Pega aquí el código z1…"></textarea>
+      <p class="foot" style="margin-top:0">En el móvil del bebé pulsa <b>Crear PIN</b> y escribe aquí las 6 cifras.</p>
+      <input class="pin-in" id="pPin" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code" placeholder="000000" aria-label="PIN de 6 cifras">
       <div class="row"><button class="btn primary" id="pJoin">Conectar</button></div>
-      <div id="pAnsWrap" class="hide">
-        <label for="pAns">Código de respuesta (cópialo en el móvil del bebé)</label>
-        <textarea class="code" id="pAns" rows="3" readonly></textarea>
-        <div class="row"><button class="btn" id="pCopy">Copiar</button><button class="btn" id="pShare">Compartir</button></div>
-      </div>
       <p class="msg" id="pMsg" role="status"></p>
     </div>
   </section>
 
-  <p class="foot">Funciona con el WiFi de casa: los dos móviles deben estar en la misma red. No usa datos móviles.</p>
+  <p class="foot">Los dos móviles deben estar en el mismo WiFi de casa, con internet solo para emparejar. El audio va directo entre ellos y no gasta datos móviles.</p>
 </main>
 
 <script>
@@ -174,9 +158,12 @@ textarea.code{width:100%;resize:none;display:block;margin-top:8px;color:var(--in
 'use strict';
 var $=function(i){return document.getElementById(i);};
 var N=28;
+var SIGNAL=window.VB_SIGNAL||'https://ntfy.sh/'; /* servicio público gratuito que solo reparte el PIN; el audio no pasa por él */
+var SILENT='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
 var S={pc:null,dc:null,mic:null,sendTrack:null,ctx:null,an:null,buf:null,lvl:-90,lastLoud:0,paused:false,
-  connected:false,thr:-45,hold:5000,lastSend:0,wake:null,remote:null,gain:null,audio:null,
-  rlvl:-90,lastMsg:0,lostOn:false,lastSoundAt:null,beepT:null,mode:'baby'};
+  connected:false,thr:-45,hold:5000,lastSend:0,wake:null,remote:null,audio:null,
+  rlvl:-90,lastMsg:0,lostOn:false,lastSoundAt:null,beepT:null,mode:'baby',es:null,esTimer:null,bytes:0,statT:0};
+window.__vb=S;
 
 /* ---------- utilidades ---------- */
 function build(el){for(var i=0;i<N;i++){el.appendChild(document.createElement('i'));}}
@@ -222,14 +209,6 @@ function gathered(pc){
     });
   });
 }
-function copyText(txt,id){
-  var done=function(){setMsg(id,'Copiado.');};
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done,function(){setMsg(id,'No se pudo copiar: mantén pulsado el texto y copia.',true);});}
-  else{setMsg(id,'Mantén pulsado el texto y copia.',true);}
-}
-function shareText(txt,id){
-  if(navigator.share){navigator.share({text:txt}).catch(function(){});}else{copyText(txt,id);}
-}
 async function keepAwake(){
   try{if('wakeLock' in navigator){S.wake=await navigator.wakeLock.request('screen');}}catch(e){}
 }
@@ -237,7 +216,23 @@ document.addEventListener('visibilitychange',function(){
   if(document.visibilityState==='visible'&&(S.mic||S.connected)){keepAwake();}
   if(S.ctx&&S.ctx.state==='suspended'){S.ctx.resume().catch(function(){});}
 });
-document.addEventListener('click',function(){if(S.ctx&&S.ctx.state==='suspended'){S.ctx.resume().catch(function(){});}});
+
+/* ---------- señalización por PIN ---------- */
+async function topicFor(pin){
+  var d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('vigilabebes-v1:'+pin));
+  return 'vb'+Array.prototype.map.call(new Uint8Array(d).subarray(0,12),function(b){return ('0'+b.toString(16)).slice(-2);}).join('');
+}
+async function sigPost(topic,txt){
+  var r=await fetch(SIGNAL+topic,{method:'POST',body:txt});
+  if(!r.ok)throw new Error('servicio de PIN '+r.status);
+}
+function sigListen(topic,onMsg){
+  sigStop();
+  var es=new EventSource(SIGNAL+topic+'/sse?since=all');
+  es.addEventListener('message',function(e){try{var j=JSON.parse(e.data);if(j&&typeof j.message==='string')onMsg(j.message);}catch(_){}});
+  S.es=es;
+}
+function sigStop(){if(S.es){S.es.close();S.es=null;}clearTimeout(S.esTimer);}
 
 function newPC(){
   if(S.pc){try{S.pc.close();}catch(e){}}
@@ -251,23 +246,23 @@ function newPC(){
   return pc;
 }
 function onLinked(){
-  S.connected=true;S.lastMsg=Date.now();setLost(false);keepAwake();render();
+  sigStop();S.connected=true;S.lastMsg=Date.now();setLost(false);keepAwake();render();
 }
 function onDropped(){
   if(!S.connected)return;
   S.connected=false;
   if(S.mode==='parent'){setLost(true);}
   render();
-  if(S.mode==='baby'){setMsg('bMsg','Se perdió la conexión. Crea un código nuevo para volver a emparejar.',true);}
+  if(S.mode==='baby'){setMsg('bMsg','Se perdió la conexión. Pulsa Crear PIN para volver a emparejar.',true);}
 }
 function resetLink(){
+  sigStop();
   if(S.pc){try{S.pc.close();}catch(e){}}
   S.pc=null;S.dc=null;S.connected=false;S.remote=null;
-  if(S.audio){S.audio.srcObject=null;S.audio=null;}
-  S.gain=null;setLost(false);
-  show('bOfferWrap',false);show('pAnsWrap',false);
-  $('bOffer').value='';$('bAnswer').value='';$('pCode').value='';$('pAns').value='';
-  setMsg('bMsg','');setMsg('pMsg','');
+  if(S.audio){S.audio.pause();S.audio.srcObject=null;}
+  setLost(false);show('bPin',false);show('pTap',false);
+  $('pPin').value='';setMsg('bMsg','');setMsg('pMsg','');
+  $('pJoin').disabled=false;$('bCreate').disabled=false;
   render();
 }
 
@@ -275,7 +270,7 @@ function resetLink(){
 async function startMic(){
   try{
     S.mic=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
-  }catch(e){setMsg('bMsg','No se pudo usar el micrófono. Permite el acceso en Ajustes de Safari.',true);show('bPair',true);return;}
+  }catch(e){setMsg('bMsg','No se pudo usar el micrófono. Permite el acceso en Ajustes de Safari.',true);return;}
   S.sendTrack=S.mic.getAudioTracks()[0].clone();S.sendTrack.enabled=false;
   var AC=window.AudioContext||window.webkitAudioContext;
   S.ctx=S.ctx||new AC();S.ctx.resume().catch(function(){});
@@ -289,27 +284,38 @@ function stopMic(){
   if(S.sendTrack){S.sendTrack.stop();}
   S.mic=S.sendTrack=S.an=null;S.lvl=-90;resetLink();
 }
-async function createOffer(){
+async function createPin(){
   if(!S.mic){await startMic();if(!S.mic)return;}
-  setMsg('bMsg','Creando código…');
+  $('bCreate').disabled=true;setMsg('bMsg','Creando PIN…');
   try{
+    var pin=String(100000+crypto.getRandomValues(new Uint32Array(1))[0]%900000);
+    var nonce=Math.random().toString(36).slice(2,8);
     var pc=newPC();
     pc.addTrack(S.sendTrack,S.mic);
     S.dc=pc.createDataChannel('ctl');
     S.dc.onclose=function(){if(S.dc&&S.connected&&S.mode==='baby'){onDropped();}};
     await pc.setLocalDescription(await pc.createOffer());
     await gathered(pc);
-    var code=await pack(pc.localDescription);
-    $('bOffer').value=code;show('bOfferWrap',true);
-    setMsg('bMsg','Envía este código al móvil de padres y pega aquí su respuesta.');
-  }catch(e){setMsg('bMsg','No se pudo crear el código: '+e.message,true);}
-}
-async function acceptAnswer(){
-  try{
-    var d=await unpack($('bAnswer').value);
-    await S.pc.setRemoteDescription(d);
-    setMsg('bMsg','Conectando…');
-  }catch(e){setMsg('bMsg','El código de respuesta no es válido. Cópialo entero.',true);}
+    var topic=await topicFor(pin);
+    sigListen(topic,function(m){
+      var pre='a.'+nonce+'.';
+      if(m.indexOf(pre)!==0||S.connected||pc!==S.pc||pc.remoteDescription)return;
+      unpack(m.slice(pre.length)).then(function(d){
+        if(pc!==S.pc||pc.remoteDescription)return;
+        sigStop();setMsg('bMsg','Conectando…');
+        return pc.setRemoteDescription(d);
+      }).catch(function(){setMsg('bMsg','La respuesta del móvil de padres no es válida. Prueba otra vez.',true);});
+    });
+    await sigPost(topic,'o.'+nonce+'.'+await pack(pc.localDescription));
+    $('bPin').textContent=pin;show('bPin',true);
+    setMsg('bMsg','Escribe este PIN en el móvil de padres. Esperando…');
+    S.esTimer=setTimeout(function(){
+      if(!S.connected){sigStop();$('bCreate').disabled=false;show('bPin',false);setMsg('bMsg','El PIN caducó. Pulsa Crear PIN otra vez.',true);}
+    },300000);
+  }catch(e){
+    sigStop();$('bCreate').disabled=false;
+    setMsg('bMsg','No se pudo crear el PIN ('+e.message+'). Comprueba que hay internet por WiFi.',true);
+  }
 }
 function babyTick(){
   var now=Date.now(),active=false;
@@ -328,7 +334,7 @@ function babyTick(){
   }
   paint($('bMeter'),S.lvl,!!S.an);
   $('bDb').textContent=Math.round(S.lvl)+' dB';
-  var st,dot='',snd='\u00a0';
+  var st,dot='',snd=' ';
   if(!S.mic){st='Micrófono apagado';}
   else if(!S.connected){st='Micrófono listo · falta emparejar';dot=' warn';}
   else if(S.paused){st='En pausa';dot=' warn';}
@@ -337,24 +343,45 @@ function babyTick(){
 }
 
 /* ---------- MODO PADRES ---------- */
+function unlockAudio(){
+  if(!S.audio){S.audio=new Audio();S.audio.setAttribute('playsinline','');S.audio.autoplay=true;}
+  S.audio.srcObject=null;S.audio.src=SILENT;
+  var p=S.audio.play();if(p&&p.catch)p.catch(function(){});
+}
 async function join(){
-  var raw=$('pCode').value;
-  if(!raw.trim()){setMsg('pMsg','Pega primero el código del bebé.',true);return;}
+  var pin=$('pPin').value.replace(/\D/g,'');
+  if(pin.length!==6){setMsg('pMsg','El PIN tiene 6 cifras.',true);return;}
   var AC=window.AudioContext||window.webkitAudioContext;
   S.ctx=S.ctx||new AC();S.ctx.resume().catch(function(){});
-  setMsg('pMsg','Preparando…');
+  unlockAudio();
+  $('pJoin').disabled=true;setMsg('pMsg','Buscando el móvil del bebé…');
   try{ /* permiso de micrófono puntual: hace que Safari use la IP real en la red local */
     var t=await navigator.mediaDevices.getUserMedia({audio:true});
     t.getTracks().forEach(function(x){x.stop();});
   }catch(e){}
   try{
-    var offer=await unpack(raw);
+    var topic=await topicFor(pin),latest=null,debounce=null,done=false;
+    sigListen(topic,function(m){
+      if(m.indexOf('o.')!==0||done)return;
+      latest=m;clearTimeout(debounce);
+      debounce=setTimeout(function(){done=true;sigStop();answer(topic,latest);},700);
+    });
+    S.esTimer=setTimeout(function(){
+      if(!done){sigStop();$('pJoin').disabled=false;
+        setMsg('pMsg','No encuentro ese PIN. Revisa que sigue en pantalla en el móvil del bebé y que los dos tenéis internet por WiFi.',true);}
+    },30000);
+  }catch(e){$('pJoin').disabled=false;setMsg('pMsg','Error: '+e.message,true);}
+}
+async function answer(topic,m){
+  try{
+    var rest=m.slice(2),k=rest.indexOf('.'),nonce=rest.slice(0,k);
+    var offer=await unpack(rest.slice(k+1));
     var pc=newPC();
     pc.ontrack=function(e){S.remote=(e.streams&&e.streams[0])||new MediaStream([e.track]);attachAudio();};
     pc.ondatachannel=function(e){
       S.dc=e.channel;
-      S.dc.onmessage=function(m){
-        try{var o=JSON.parse(m.data);S.rlvl=o.d;S.lastMsg=Date.now();
+      S.dc.onmessage=function(ev){
+        try{var o=JSON.parse(ev.data);S.rlvl=o.d;S.lastMsg=Date.now();
           if(o.a)S.lastSoundAt=new Date();
           if(S.lostOn)setLost(false);}catch(_){}
       };
@@ -363,20 +390,16 @@ async function join(){
     pc.getTransceivers().forEach(function(t){try{t.direction='recvonly';}catch(_){}});
     await pc.setLocalDescription(await pc.createAnswer());
     await gathered(pc);
-    $('pAns').value=await pack(pc.localDescription);
-    show('pAnsWrap',true);
-    setMsg('pMsg','Copia este código de respuesta y pégalo en el móvil del bebé.');
-  }catch(e){setMsg('pMsg','El código del bebé no es válido. Cópialo entero.',true);}
+    await sigPost(topic,'a.'+nonce+'.'+await pack(pc.localDescription));
+    setMsg('pMsg','Conectando…');
+  }catch(e){$('pJoin').disabled=false;setMsg('pMsg','No se pudo conectar: '+e.message,true);}
 }
 function attachAudio(){
-  S.audio=new Audio();S.audio.srcObject=S.remote;S.audio.muted=true;S.audio.play().catch(function(){});
-  try{
-    var src=S.ctx.createMediaStreamSource(S.remote);
-    S.gain=S.ctx.createGain();src.connect(S.gain);S.gain.connect(S.ctx.destination);
-    applyVol();
-  }catch(e){S.audio.muted=false;}
+  if(!S.audio){S.audio=new Audio();S.audio.setAttribute('playsinline','');S.audio.autoplay=true;}
+  S.audio.removeAttribute('src');S.audio.srcObject=S.remote;S.audio.muted=false;
+  var p=S.audio.play();
+  if(p&&p.then){p.then(function(){show('pTap',false);},function(){show('pTap',true);});}
 }
-function applyVol(){if(S.gain)S.gain.gain.value=($('vol').value/100)*2;}
 function beep(){
   if(!S.ctx||S.ctx.state!=='running')return;
   var o=S.ctx.createOscillator(),g=S.ctx.createGain();
@@ -397,6 +420,14 @@ function parentTick(){
   paint($('pMeter'),d,live&&Date.now()-S.lastMsg<1500&&d>-80);
   $('pDb').textContent=Math.round(d)+' dB';
   $('pLast').textContent='Último sonido: '+(S.lastSoundAt?S.lastSoundAt.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit',second:'2-digit'}):'ninguno aún');
+  if(S.pc&&S.connected&&S.mode==='parent'&&Date.now()-S.statT>1000){
+    S.statT=Date.now();
+    S.pc.getStats().then(function(st){
+      st.forEach(function(r){if(r.type==='inbound-rtp'&&r.kind==='audio'){S.bytes=r.bytesReceived;}});
+      var playing=S.audio&&!S.audio.paused;
+      $('pAud').textContent='Audio: '+Math.round(S.bytes/1024)+' kB recibidos · '+(playing?'reproduciendo':'en pausa');
+    }).catch(function(){});
+  }
 }
 function renderParent(){
   var linked=S.connected||S.lostOn;
@@ -423,7 +454,7 @@ function setMode(m){
 }
 function init(){
   build($('bMeter'));build($('pMeter'));
-  if(!window.RTCPeerConnection||!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+  if(!window.RTCPeerConnection||!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.crypto||!crypto.subtle){
     $('support').textContent='Este navegador no permite micrófono o conexión directa. Abre la página con Safari desde el enlace https de GitHub Pages.';
   }
   try{var t=parseInt(localStorage.getItem('vb-thr'),10);if(t)$('thrIn').value=t;}catch(e){}
@@ -432,19 +463,18 @@ function init(){
     S.thr=+this.value;$('thrVal').textContent=S.thr;
     try{localStorage.setItem('vb-thr',this.value);}catch(e){}
   });
-  $('vol').addEventListener('input',applyVol);
   $('micBtn').addEventListener('click',function(){
     if(!S.mic){startMic();}
     else if(!S.connected){stopMic();}
     else{S.paused=!S.paused;render();}
   });
-  $('bCreate').addEventListener('click',createOffer);
-  $('bCopy').addEventListener('click',function(){copyText($('bOffer').value,'bMsg');});
-  $('bShare').addEventListener('click',function(){shareText($('bOffer').value,'bMsg');});
-  $('bConnect').addEventListener('click',acceptAnswer);
+  $('bCreate').addEventListener('click',createPin);
   $('pJoin').addEventListener('click',join);
-  $('pCopy').addEventListener('click',function(){copyText($('pAns').value,'pMsg');});
-  $('pShare').addEventListener('click',function(){shareText($('pAns').value,'pMsg');});
+  $('pPin').addEventListener('keydown',function(e){if(e.key==='Enter')join();});
+  $('pTapBtn').addEventListener('click',function(){
+    if(S.ctx)S.ctx.resume().catch(function(){});
+    if(S.audio){S.audio.play().then(function(){show('pTap',false);}).catch(function(){});}
+  });
   ['bRepair','pRepair','lostRepair'].forEach(function(id){$(id).addEventListener('click',resetLink);});
   $('tabBaby').addEventListener('click',function(){setMode('baby');});
   $('tabParent').addEventListener('click',function(){setMode('parent');});

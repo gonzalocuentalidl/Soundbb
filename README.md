@@ -13,22 +13,19 @@ Un solo archivo (`index.html`) que convierte dos móviles en un vigilabebés. Si
 4. Espera 1-2 minutos. El enlace será `https://TU-USUARIO.github.io/vigilabebes/`.
 5. Abre ese enlace en los dos iPhone con Safari. Opcional: Compartir → *Añadir a pantalla de inicio*; pero para vigilar de verdad es más fiable dejarlo en una pestaña de Safari (ver pruebas).
 
-## Cómo emparejar (una vez cada vez que se abre)
+## Cómo emparejar (cada vez que se abre)
 
-Los dos móviles deben estar en la misma WiFi.
+Los dos móviles deben estar en el mismo WiFi y con internet (solo para el PIN).
 
-1. **Móvil del bebé:** pestaña *Móvil del bebé* → **Activar micrófono** (acepta el permiso) → **Crear código**.
-2. Pulsa **Compartir** y envía el código por WhatsApp, iMessage o AirDrop al móvil de padres.
-3. **Móvil de padres:** pestaña *Móvil de padres* → pega el código → **Conectar** (acepta el permiso del micrófono; solo sirve para que Safari use la red local, no graba nada).
-4. Copia el código de respuesta y envíalo de vuelta al móvil del bebé.
-5. En el móvil del bebé pégalo en *Código de respuesta* → **Conectar**.
-6. Al conectar, las tarjetas de emparejamiento desaparecen y queda lo esencial.
+1. **Móvil del bebé:** pestaña *Móvil del bebé* → **Crear PIN** (acepta el permiso del micrófono). Aparece un PIN de 6 cifras.
+2. **Móvil de padres:** pestaña *Móvil de padres* → escribe el PIN → **Conectar** (acepta el permiso del micrófono; solo sirve para que Safari use la red local, no graba nada).
+3. En unos segundos conectan y las tarjetas de emparejamiento desaparecen.
 
-Si se corta la conexión hay que repetir el emparejamiento (no hay servidor que lo recuerde).
+Cómo funciona: el PIN solo sirve para que los dos móviles se encuentren a través de un servicio público gratuito (ntfy.sh). El audio va directo de móvil a móvil por tu WiFi y no pasa por internet. El PIN caduca a los 5 minutos y es aleatorio, así que nadie puede adivinarlo mientras no esté en pantalla. Si se corta la conexión hay que crear un PIN nuevo.
 
 ## Lista de pruebas en iPhone (lo que hay que validar)
 
-- [ ] Emparejan en la misma WiFi sin internet en el router (solo red local).
+- [ ] Emparejan con el PIN en la misma WiFi.
 - [ ] Móvil del bebé enchufado, pantalla encendida: ¿el audio llega con claridad a 10 m y con una pared?
 - [ ] Ajusta la **sensibilidad** (Ajustes) hasta que el ruido de fondo no dispare el envío.
 - [ ] Móvil de padres con la pantalla bloqueada: ¿sigue sonando? (Safari puede cortar el audio en segundo plano; anota a los cuántos segundos.)
@@ -40,5 +37,6 @@ Si se corta la conexión hay que repetir el emparejamiento (no hay servidor que 
 
 - Usa WiFi (WebRTC), no Bluetooth: Safari en iPhone no admite Bluetooth web.
 - Los iPhone pueden pausar Safari en segundo plano. Si la prueba lo confirma, el siguiente paso sería una app nativa.
-- El volumen se controla dentro de la página; los botones del iPhone también funcionan.
+- El volumen del móvil de padres se sube con los botones del iPhone.
+- Para emparejar hace falta internet por WiFi (sin él, la conexión no se puede iniciar).
 - No es un producto sanitario: no sustituye la supervisión de un adulto.
