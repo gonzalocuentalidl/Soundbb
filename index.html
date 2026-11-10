@@ -111,8 +111,8 @@ input.pin-in{width:100%;font-size:30px;text-align:center;letter-spacing:.2em;fon
       <p class="foot" id="bSend" style="text-align:center">&nbsp;</p>
       <details><summary>Ajustes</summary>
         <div class="read"><span>Nivel <b id="bDb">−90 dB</b></span></div>
-        <label for="thrIn">Sensibilidad: se envía sonido por encima de <span id="thrVal">−45</span> dB</label>
-        <input type="range" id="thrIn" min="-70" max="-15" value="-45">
+        <div class="read" style="margin-top:6px"><span>Sensibilidad <b id="thrVal">−45 dB</b></span></div>
+        <p class="foot">Se cambia desde el móvil de padres.</p>
         <div class="row"><button class="btn" id="bRepair">Emparejar de nuevo</button></div>
       </details>
       <p class="foot">Deja este móvil cargando, con la pantalla encendida y cerca de la cuna.</p>
@@ -136,7 +136,10 @@ input.pin-in{width:100%;font-size:30px;text-align:center;letter-spacing:.2em;fon
       <div class="row hide" id="pTap"><button class="btn primary" id="pTapBtn" style="width:100%">Toca para activar el sonido</button></div>
       <p class="foot" style="text-align:center">El volumen se sube con los botones del iPhone.</p>
       <details><summary>Ajustes</summary>
-        <div class="read"><span>Nivel <b id="pDb">−90 dB</b></span></div>
+        <div class="read"><span>Nivel del cuarto <b id="pDb">−90 dB</b></span></div>
+        <label for="pThr">Sensibilidad: el bebé envía sonido por encima de <span id="pThrVal">−45</span> dB</label>
+        <input type="range" id="pThr" min="-70" max="-15" value="-45">
+        <p class="foot">Más a la izquierda = más sensible. Compara con el nivel del cuarto de arriba.</p>
         <div class="read" style="margin-top:6px"><span id="pAud">Audio: —</span></div>
         <div class="row"><button class="btn" id="pRepair">Emparejar de nuevo</button></div>
       </details>
@@ -162,7 +165,7 @@ var SIGNAL=window.VB_SIGNAL||'https://ntfy.sh/'; /* servicio público gratuito q
 var SILENT='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
 var S={pc:null,dc:null,mic:null,sendTrack:null,ctx:null,an:null,buf:null,lvl:-90,lastLoud:0,paused:false,
   connected:false,thr:-45,hold:5000,lastSend:0,wake:null,remote:null,audio:null,
-  rlvl:-90,lastMsg:0,lostOn:false,lastSoundAt:null,beepT:null,mode:'baby',es:null,esTimer:null,bytes:0,statT:0};
+  rlvl:-90,lastMsg:0,lostOn:false,lastSoundAt:null,beepT:null,mode:'baby',es:null,esTimer:null,bytes:0,statT:0,thrTouch:0};
 window.__vb=S;
 
 /* ---------- utilidades ---------- */
@@ -267,6 +270,10 @@ function resetLink(){
 }
 
 /* ---------- MODO BEBÉ ---------- */
+function setThr(v){
+  S.thr=v;$('thrVal').textContent=v+' dB';
+  try{localStorage.setItem('vb-thr',String(v));}catch(e){}
+}
 async function startMic(){
   try{
     S.mic=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
@@ -293,6 +300,9 @@ async function createPin(){
     var pc=newPC();
     pc.addTrack(S.sendTrack,S.mic);
     S.dc=pc.createDataChannel('ctl');
+    S.dc.onmessage=function(ev){
+      try{var o=JSON.parse(ev.data);if(typeof o.thr==='number'&&o.thr>=-70&&o.thr<=-15){setThr(o.thr);}}catch(_){}
+    };
     S.dc.onclose=function(){if(S.dc&&S.connected&&S.mode==='baby'){onDropped();}};
     await pc.setLocalDescription(await pc.createOffer());
     await gathered(pc);
@@ -329,7 +339,7 @@ function babyTick(){
     S.sendTrack.enabled=active&&S.connected;
     if(S.dc&&S.dc.readyState==='open'&&now-S.lastSend>300){
       S.lastSend=now;
-      try{S.dc.send(JSON.stringify({d:Math.round(S.lvl),a:active?1:0}));}catch(e){}
+      try{S.dc.send(JSON.stringify({d:Math.round(S.lvl),a:active?1:0,t:S.thr}));}catch(e){}
     }
   }
   paint($('bMeter'),S.lvl,!!S.an);
@@ -382,6 +392,7 @@ async function answer(topic,m){
       S.dc=e.channel;
       S.dc.onmessage=function(ev){
         try{var o=JSON.parse(ev.data);S.rlvl=o.d;S.lastMsg=Date.now();
+          if(typeof o.t==='number'&&Date.now()-S.thrTouch>2500){$('pThr').value=o.t;$('pThrVal').textContent=o.t;}
           if(o.a)S.lastSoundAt=new Date();
           if(S.lostOn)setLost(false);}catch(_){}
       };
@@ -457,11 +468,12 @@ function init(){
   if(!window.RTCPeerConnection||!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.crypto||!crypto.subtle){
     $('support').textContent='Este navegador no permite micrófono o conexión directa. Abre la página con Safari desde el enlace https de GitHub Pages.';
   }
-  try{var t=parseInt(localStorage.getItem('vb-thr'),10);if(t)$('thrIn').value=t;}catch(e){}
-  S.thr=+$('thrIn').value;$('thrVal').textContent=S.thr;
-  $('thrIn').addEventListener('input',function(){
-    S.thr=+this.value;$('thrVal').textContent=S.thr;
-    try{localStorage.setItem('vb-thr',this.value);}catch(e){}
+  try{var t=parseInt(localStorage.getItem('vb-thr'),10);if(t>=-70&&t<=-15)S.thr=t;}catch(e){}
+  setThr(S.thr);
+  $('pThr').value=S.thr;$('pThrVal').textContent=S.thr;
+  $('pThr').addEventListener('input',function(){
+    S.thrTouch=Date.now();$('pThrVal').textContent=this.value;
+    if(S.dc&&S.dc.readyState==='open'){try{S.dc.send(JSON.stringify({thr:+this.value}));}catch(e){}}
   });
   $('micBtn').addEventListener('click',function(){
     if(!S.mic){startMic();}
