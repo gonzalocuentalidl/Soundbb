@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Vigilabebés Local</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=IBM+Plex+Mono:wght@400;500&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout: una columna de 520px máx., móvil primero.
+   Cabecera → selector de modo → tarjeta principal → tarjeta de emparejamiento (se oculta al conectar) */
+:root{
+  --bg:#f3f5f1; --surface:#ffffff; --ink:#14201a; --muted:#5b6b62;
+  --accent:#0c7a4b; --accent-ink:#ffffff; --alert:#c2410c; --line:#d8dfd9;
+  --glow:rgba(12,122,75,.14);
+  --font-head:'Bricolage Grotesque',system-ui,sans-serif;
+  --font-body:'Figtree',system-ui,sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0a0f0c; --surface:#121a15; --ink:#e8f1eb; --muted:#8fa196;
+    --accent:#5dffa8; --accent-ink:#04140b; --alert:#ff8a4c; --line:#24332a;
+    --glow:rgba(93,255,168,.16);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0a0f0c; --surface:#121a15; --ink:#e8f1eb; --muted:#8fa196;
+  --accent:#5dffa8; --accent-ink:#04140b; --alert:#ff8a4c; --line:#24332a;
+  --glow:rgba(93,255,168,.16);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding:max(20px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(28px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));}
+main{max-width:520px;margin:0 auto}
+h1,h2{font-family:var(--font-head);margin:0;line-height:1.1}
+h1{font-size:30px;letter-spacing:-.02em}
+h2{font-size:19px;margin-bottom:10px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand svg{width:34px;height:34px;flex:none}
+.sub{color:var(--muted);margin:4px 0 0;font-size:14px}
+.preview{border:1px dashed var(--line);border-radius:12px;padding:10px 12px;font-size:13.5px;color:var(--muted);margin:14px 0 18px;background:var(--surface)}
+.preview b{color:var(--ink)}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:5px;margin-bottom:16px}
+.seg button{font:inherit;font-weight:600;border:0;border-radius:10px;padding:12px 8px;background:transparent;color:var(--muted);cursor:pointer;min-height:48px}
+.seg button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink)}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:16px}
+.status{display:flex;align-items:center;gap:10px;font-weight:600}
+.dot{width:12px;height:12px;border-radius:50%;background:var(--muted);flex:none}
+.dot.ok{background:var(--accent);box-shadow:0 0 0 6px var(--glow)}
+.dot.warn{background:var(--alert);box-shadow:0 0 0 6px rgba(194,65,12,.18)}
+.meter{display:flex;align-items:flex-end;gap:3px;height:84px;margin:16px 0 6px;position:relative}
+.meter i{flex:1;background:var(--line);border-radius:3px;height:12%;transition:height .08s,background .15s}
+.meter i.on{background:var(--accent)}
+.thr{display:none}
+details{margin-top:14px;border-top:1px solid var(--line);padding-top:10px}
+summary{cursor:pointer;font-weight:600;color:var(--muted);min-height:36px;display:flex;align-items:center}
+summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.read{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:13px;color:var(--muted)}
+.read b{color:var(--ink);font-weight:500}
+.mic{display:flex;justify-content:center;margin:6px 0 14px}
+.micbtn{width:132px;height:132px;border-radius:50%;border:3px solid var(--accent);background:var(--surface);color:var(--accent);font:inherit;font-weight:700;font-size:15px;cursor:pointer;display:grid;place-items:center;text-align:center;line-height:1.2}
+.micbtn[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+label{display:block;font-size:14px;font-weight:600;margin:14px 0 6px}
+input[type=range]{width:100%;accent-color:var(--accent);height:32px}
+.code{font-family:var(--font-mono);font-size:13px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;word-break:break-all;color:var(--muted)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btn{font:inherit;font-weight:600;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:11px 14px;min-height:44px;cursor:pointer}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+ol{margin:0;padding-left:20px}
+li{margin:6px 0}
+.banner{display:block;border-radius:12px;padding:12px 14px;margin-bottom:14px;font-weight:600;background:var(--alert);color:#fff}
+.banner.show{display:block}
+.hide{display:none}
+.foot{color:var(--muted);font-size:13px;margin-top:6px}
+@media (prefers-reduced-motion:reduce){.meter i{transition:none}}
+textarea.code{width:100%;resize:none;display:block;margin-top:8px;color:var(--ink)}
+.msg{font-size:13.5px;color:var(--muted);margin:10px 0 0;min-height:1em}
+.msg.err{color:var(--alert);font-weight:600}
+.banner .btn{margin-top:10px;background:#fff;color:#14201a;border-color:#fff}
+</style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <div class="brand">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="9" fill="none" stroke="var(--accent)" stroke-width="3"/><path d="M29 20c6 0 8 8 4 12" fill="none" stroke="var(--accent)" stroke-width="3" stroke-dasharray="1 5" stroke-linecap="round"/><path d="M11 20c-6 0-8-8-4-12" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/></svg>
+      <div><h1>Vigilabebés</h1><p class="sub">Dos móviles, un enlace, sin servidor.</p></div>
+    </div>
+  </div>
+
+  <p class="msg err" id="support"></p>
+
+  <div class="seg" role="tablist" aria-label="Modo">
+    <button role="tab" id="tabBaby" aria-selected="true">Móvil del bebé</button>
+    <button role="tab" id="tabParent" aria-selected="false">Móvil de padres</button>
+  </div>
+
+  <!-- MODO BEBÉ -->
+  <section id="baby">
+    <div class="card">
+      <div class="status"><span class="dot" id="bDot"></span><span id="bStatus">Micrófono apagado</span></div>
+      <div class="mic"><button class="micbtn" id="micBtn" aria-pressed="false">Activar<br>micrófono</button></div>
+      <div class="meter" id="bMeter" aria-hidden="true"></div>
+      <p class="foot" id="bSend" style="text-align:center">&nbsp;</p>
+      <details><summary>Ajustes</summary>
+        <div class="read"><span>Nivel <b id="bDb">−90 dB</b></span></div>
+        <label for="thrIn">Sensibilidad: se envía sonido por encima de <span id="thrVal">−45</span> dB</label>
+        <input type="range" id="thrIn" min="-70" max="-15" value="-45">
+        <div class="row"><button class="btn" id="bRepair">Emparejar de nuevo</button></div>
+      </details>
+      <p class="foot">Deja este móvil cargando, con la pantalla encendida y cerca de la cuna.</p>
+    </div>
+    <div class="card hide" id="bPair">
+      <h2>Emparejar con el móvil de padres</h2>
+      <ol>
+        <li>Pulsa <b>Crear código</b> y envíaselo al otro móvil.</li>
+        <li>Pega aquí el código de respuesta que te devuelva.</li>
+      </ol>
+      <div class="row"><button class="btn primary" id="bCreate">Crear código</button></div>
+      <div id="bOfferWrap" class="hide">
+        <textarea class="code" id="bOffer" rows="3" readonly aria-label="Código de este móvil"></textarea>
+        <div class="row"><button class="btn" id="bCopy">Copiar</button><button class="btn" id="bShare">Compartir</button></div>
+        <label for="bAnswer">Código de respuesta</label>
+        <textarea class="code" id="bAnswer" rows="3" placeholder="Pega aquí el código z1… de respuesta"></textarea>
+        <div class="row"><button class="btn primary" id="bConnect">Conectar</button></div>
+      </div>
+      <p class="msg" id="bMsg" role="status"></p>
+    </div>
+  </section>
+
+  <!-- MODO PADRES -->
+  <section id="parent" class="hide">
+    <div class="banner hide" id="lost" role="alert">Conexión perdida. Revisa el móvil del bebé.<br><button class="btn" id="lostRepair">Emparejar de nuevo</button></div>
+    <div class="card hide" id="pMain">
+      <div class="status"><span class="dot" id="pDot"></span><span id="pStatus">Conectado · escuchando</span></div>
+      <div class="meter" id="pMeter" aria-hidden="true"></div>
+      <p class="foot" id="pLast" style="text-align:center">Último sonido: nunca</p>
+      <label for="vol">Volumen</label>
+      <input type="range" id="vol" min="0" max="100" value="70">
+      <details><summary>Ajustes</summary>
+        <div class="read"><span>Nivel <b id="pDb">−90 dB</b></span></div>
+        <div class="row"><button class="btn" id="pRepair">Emparejar de nuevo</button></div>
+      </details>
+    </div>
+    <div class="card" id="pPair">
+      <h2>Emparejar con el móvil del bebé</h2>
+      <ol>
+        <li>En el móvil del bebé, activa el micrófono y pulsa <b>Crear código</b>.</li>
+        <li>Pega ese código aquí y pulsa <b>Conectar</b>.</li>
+        <li>Copia el código de respuesta y pégalo en el móvil del bebé.</li>
+      </ol>
+      <label for="pCode">Código del bebé</label>
+      <textarea class="code" id="pCode" rows="3" placeholder="Pega aquí el código z1…"></textarea>
+      <div class="row"><button class="btn primary" id="pJoin">Conectar</button></div>
+      <div id="pAnsWrap" class="hide">
+        <label for="pAns">Código de respuesta (cópialo en el móvil del bebé)</label>
+        <textarea class="code" id="pAns" rows="3" readonly></textarea>
+        <div class="row"><button class="btn" id="pCopy">Copiar</button><button class="btn" id="pShare">Compartir</button></div>
+      </div>
+      <p class="msg" id="pMsg" role="status"></p>
+    </div>
+  </section>
+
+  <p class="foot">Funciona con el WiFi de casa: los dos móviles deben estar en la misma red. No usa datos móviles.</p>
+</main>
+
+<script>
+(function(){
+'use strict';
+var $=function(i){return document.getElementById(i);};
+var N=28;
+var S={pc:null,dc:null,mic:null,sendTrack:null,ctx:null,an:null,buf:null,lvl:-90,lastLoud:0,paused:false,
+  connected:false,thr:-45,hold:5000,lastSend:0,wake:null,remote:null,gain:null,audio:null,
+  rlvl:-90,lastMsg:0,lostOn:false,lastSoundAt:null,beepT:null,mode:'baby'};
+
+/* ---------- utilidades ---------- */
+function build(el){for(var i=0;i<N;i++){el.appendChild(document.createElement('i'));}}
+function db2pct(d){return Math.max(0,Math.min(1,(d+90)/75));}
+function paint(el,d,live){
+  var bars=el.querySelectorAll('i'),p=db2pct(d),t=Date.now();
+  for(var i=0;i<bars.length;i++){
+    var w=live?(0.55+0.45*Math.sin(i*0.7+t/260)):1;
+    bars[i].style.height=(12+Math.max(0,Math.min(88,p*100*w)))+'%';
+    bars[i].classList.toggle('on',(i/N)<p&&live);
+  }
+}
+function setMsg(id,t,err){var e=$(id);e.textContent=t||'';e.className='msg'+(err?' err':'');}
+function show(id,v){$(id).classList.toggle('hide',!v);}
+function b64(u8){var s='',i;for(i=0;i<u8.length;i+=0x8000){s+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000));}
+  return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
+function unb64(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';
+  var bin=atob(s),u=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return u;}
+async function pack(desc){
+  var bytes=new TextEncoder().encode(JSON.stringify({t:desc.type,s:desc.sdp}));
+  if('CompressionStream' in window){
+    var cs=new Blob([bytes]).stream().pipeThrough(new CompressionStream('deflate'));
+    return 'z1.'+b64(new Uint8Array(await new Response(cs).arrayBuffer()));
+  }
+  return 'v1.'+b64(bytes);
+}
+async function unpack(str){
+  str=(str||'').replace(/\s+/g,'');
+  var kind=str.slice(0,3),bytes=unb64(str.slice(3));
+  if(kind==='z1.'){
+    var ds=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate'));
+    bytes=new Uint8Array(await new Response(ds).arrayBuffer());
+  }else if(kind!=='v1.'){throw new Error('formato');}
+  var o=JSON.parse(new TextDecoder().decode(bytes));
+  return {type:o.t,sdp:o.s};
+}
+function gathered(pc){
+  return new Promise(function(res){
+    if(pc.iceGatheringState==='complete')return res();
+    var t=setTimeout(res,4000);
+    pc.addEventListener('icegatheringstatechange',function(){
+      if(pc.iceGatheringState==='complete'){clearTimeout(t);res();}
+    });
+  });
+}
+function copyText(txt,id){
+  var done=function(){setMsg(id,'Copiado.');};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done,function(){setMsg(id,'No se pudo copiar: mantén pulsado el texto y copia.',true);});}
+  else{setMsg(id,'Mantén pulsado el texto y copia.',true);}
+}
+function shareText(txt,id){
+  if(navigator.share){navigator.share({text:txt}).catch(function(){});}else{copyText(txt,id);}
+}
+async function keepAwake(){
+  try{if('wakeLock' in navigator){S.wake=await navigator.wakeLock.request('screen');}}catch(e){}
+}
+document.addEventListener('visibilitychange',function(){
+  if(document.visibilityState==='visible'&&(S.mic||S.connected)){keepAwake();}
+  if(S.ctx&&S.ctx.state==='suspended'){S.ctx.resume().catch(function(){});}
+});
+document.addEventListener('click',function(){if(S.ctx&&S.ctx.state==='suspended'){S.ctx.resume().catch(function(){});}});
+
+function newPC(){
+  if(S.pc){try{S.pc.close();}catch(e){}}
+  var pc=new RTCPeerConnection({iceServers:[]});
+  S.pc=pc;
+  pc.onconnectionstatechange=function(){
+    if(pc!==S.pc)return;
+    if(pc.connectionState==='connected'){onLinked();}
+    else if(pc.connectionState==='failed'||pc.connectionState==='closed'){onDropped();}
+  };
+  return pc;
+}
+function onLinked(){
+  S.connected=true;S.lastMsg=Date.now();setLost(false);keepAwake();render();
+}
+function onDropped(){
+  if(!S.connected)return;
+  S.connected=false;
+  if(S.mode==='parent'){setLost(true);}
+  render();
+  if(S.mode==='baby'){setMsg('bMsg','Se perdió la conexión. Crea un código nuevo para volver a emparejar.',true);}
+}
+function resetLink(){
+  if(S.pc){try{S.pc.close();}catch(e){}}
+  S.pc=null;S.dc=null;S.connected=false;S.remote=null;
+  if(S.audio){S.audio.srcObject=null;S.audio=null;}
+  S.gain=null;setLost(false);
+  show('bOfferWrap',false);show('pAnsWrap',false);
+  $('bOffer').value='';$('bAnswer').value='';$('pCode').value='';$('pAns').value='';
+  setMsg('bMsg','');setMsg('pMsg','');
+  render();
+}
+
+/* ---------- MODO BEBÉ ---------- */
+async function startMic(){
+  try{
+    S.mic=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
+  }catch(e){setMsg('bMsg','No se pudo usar el micrófono. Permite el acceso en Ajustes de Safari.',true);show('bPair',true);return;}
+  S.sendTrack=S.mic.getAudioTracks()[0].clone();S.sendTrack.enabled=false;
+  var AC=window.AudioContext||window.webkitAudioContext;
+  S.ctx=S.ctx||new AC();S.ctx.resume().catch(function(){});
+  var src=S.ctx.createMediaStreamSource(S.mic);
+  S.an=S.ctx.createAnalyser();S.an.fftSize=1024;S.buf=new Float32Array(S.an.fftSize);
+  src.connect(S.an);
+  keepAwake();render();
+}
+function stopMic(){
+  if(S.mic){S.mic.getTracks().forEach(function(t){t.stop();});}
+  if(S.sendTrack){S.sendTrack.stop();}
+  S.mic=S.sendTrack=S.an=null;S.lvl=-90;resetLink();
+}
+async function createOffer(){
+  setMsg('bMsg','Creando código…');
+  try{
+    var pc=newPC();
+    pc.addTrack(S.sendTrack,S.mic);
+    S.dc=pc.createDataChannel('ctl');
+    S.dc.onclose=function(){if(S.dc&&S.connected&&S.mode==='baby'){onDropped();}};
+    await pc.setLocalDescription(await pc.createOffer());
+    await gathered(pc);
+    var code=await pack(pc.localDescription);
+    $('bOffer').value=code;show('bOfferWrap',true);
+    setMsg('bMsg','Envía este código al móvil de padres y pega aquí su respuesta.');
+  }catch(e){setMsg('bMsg','No se pudo crear el código: '+e.message,true);}
+}
+async function acceptAnswer(){
+  try{
+    var d=await unpack($('bAnswer').value);
+    await S.pc.setRemoteDescription(d);
+    setMsg('bMsg','Conectando…');
+  }catch(e){setMsg('bMsg','El código de respuesta no es válido. Cópialo entero.',true);}
+}
+function babyTick(){
+  var now=Date.now(),active=false;
+  if(S.an){
+    S.an.getFloatTimeDomainData(S.buf);
+    var s=0,i;for(i=0;i<S.buf.length;i++)s+=S.buf[i]*S.buf[i];
+    var rms=Math.sqrt(s/S.buf.length);
+    S.lvl=Math.max(-90,rms>0?20*Math.log10(rms):-90);
+    if(!S.paused&&S.lvl>S.thr)S.lastLoud=now;
+    active=!S.paused&&(now-S.lastLoud<S.hold);
+    S.sendTrack.enabled=active&&S.connected;
+    if(S.dc&&S.dc.readyState==='open'&&now-S.lastSend>300){
+      S.lastSend=now;
+      try{S.dc.send(JSON.stringify({d:Math.round(S.lvl),a:active?1:0}));}catch(e){}
+    }
+  }
+  paint($('bMeter'),S.lvl,!!S.an);
+  $('bDb').textContent=Math.round(S.lvl)+' dB';
+  var st,dot='',snd='\u00a0';
+  if(!S.mic){st='Micrófono apagado';}
+  else if(!S.connected){st='Micrófono listo · falta emparejar';dot=' warn';}
+  else if(S.paused){st='En pausa';dot=' warn';}
+  else{st=active?'Enviando sonido':'Escuchando en silencio';dot=' ok';snd=active?'Los padres te están oyendo':'Silencio: no se envía nada';}
+  $('bStatus').textContent=st;$('bDot').className='dot'+dot;$('bSend').innerHTML=snd;
+}
+
+/* ---------- MODO PADRES ---------- */
+async function join(){
+  var raw=$('pCode').value;
+  if(!raw.trim()){setMsg('pMsg','Pega primero el código del bebé.',true);return;}
+  var AC=window.AudioContext||window.webkitAudioContext;
+  S.ctx=S.ctx||new AC();S.ctx.resume().catch(function(){});
+  setMsg('pMsg','Preparando…');
+  try{ /* permiso de micrófono puntual: hace que Safari use la IP real en la red local */
+    var t=await navigator.mediaDevices.getUserMedia({audio:true});
+    t.getTracks().forEach(function(x){x.stop();});
+  }catch(e){}
+  try{
+    var offer=await unpack(raw);
+    var pc=newPC();
+    pc.ontrack=function(e){S.remote=(e.streams&&e.streams[0])||new MediaStream([e.track]);attachAudio();};
+    pc.ondatachannel=function(e){
+      S.dc=e.channel;
+      S.dc.onmessage=function(m){
+        try{var o=JSON.parse(m.data);S.rlvl=o.d;S.lastMsg=Date.now();
+          if(o.a)S.lastSoundAt=new Date();
+          if(S.lostOn)setLost(false);}catch(_){}
+      };
+    };
+    await pc.setRemoteDescription(offer);
+    pc.getTransceivers().forEach(function(t){try{t.direction='recvonly';}catch(_){}});
+    await pc.setLocalDescription(await pc.createAnswer());
+    await gathered(pc);
+    $('pAns').value=await pack(pc.localDescription);
+    show('pAnsWrap',true);
+    setMsg('pMsg','Copia este código de respuesta y pégalo en el móvil del bebé.');
+  }catch(e){setMsg('pMsg','El código del bebé no es válido. Cópialo entero.',true);}
+}
+function attachAudio(){
+  S.audio=new Audio();S.audio.srcObject=S.remote;S.audio.muted=true;S.audio.play().catch(function(){});
+  try{
+    var src=S.ctx.createMediaStreamSource(S.remote);
+    S.gain=S.ctx.createGain();src.connect(S.gain);S.gain.connect(S.ctx.destination);
+    applyVol();
+  }catch(e){S.audio.muted=false;}
+}
+function applyVol(){if(S.gain)S.gain.gain.value=($('vol').value/100)*2;}
+function beep(){
+  if(!S.ctx||S.ctx.state!=='running')return;
+  var o=S.ctx.createOscillator(),g=S.ctx.createGain();
+  o.type='sine';o.frequency.value=880;g.gain.value=0.25;
+  o.connect(g);g.connect(S.ctx.destination);o.start();o.stop(S.ctx.currentTime+0.35);
+}
+function setLost(v){
+  S.lostOn=v;show('lost',v);
+  document.title=v?'⚠ Conexión perdida':'Vigilabebés Local';
+  clearInterval(S.beepT);
+  if(v){beep();S.beepT=setInterval(beep,2000);}
+  if(S.mode==='parent')renderParent();
+}
+function parentTick(){
+  if(S.connected&&S.mode==='parent'&&Date.now()-S.lastMsg>6000&&!S.lostOn)setLost(true);
+  var live=S.connected&&!S.lostOn;
+  var d=live?S.rlvl:-90;
+  paint($('pMeter'),d,live&&Date.now()-S.lastMsg<1500&&d>-80);
+  $('pDb').textContent=Math.round(d)+' dB';
+  $('pLast').textContent='Último sonido: '+(S.lastSoundAt?S.lastSoundAt.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit',second:'2-digit'}):'ninguno aún');
+}
+function renderParent(){
+  var linked=S.connected||S.lostOn;
+  show('pMain',linked);show('pPair',!linked);
+  $('pDot').className='dot '+(S.lostOn?'warn':'ok');
+  $('pStatus').textContent=S.lostOn?'Sin señal del bebé':'Conectado · escuchando';
+}
+
+/* ---------- interfaz común ---------- */
+function render(){
+  show('bPair',!!S.mic&&!S.connected);
+  var mb=$('micBtn');
+  if(!S.mic){mb.innerHTML='Activar<br>micrófono';mb.setAttribute('aria-pressed','false');}
+  else if(!S.connected){mb.innerHTML='Micrófono<br>activo';mb.setAttribute('aria-pressed','true');}
+  else{mb.innerHTML=S.paused?'Reanudar':'Pausar';mb.setAttribute('aria-pressed',S.paused?'false':'true');}
+  renderParent();
+}
+function setMode(m){
+  S.mode=m;var baby=m==='baby';
+  $('tabBaby').setAttribute('aria-selected',baby);$('tabParent').setAttribute('aria-selected',!baby);
+  show('baby',baby);show('parent',!baby);
+  try{localStorage.setItem('vb-mode',m);}catch(e){}
+  render();
+}
+function init(){
+  build($('bMeter'));build($('pMeter'));
+  if(!window.RTCPeerConnection||!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+    $('support').textContent='Este navegador no permite micrófono o conexión directa. Abre la página con Safari desde el enlace https de GitHub Pages.';
+  }
+  try{var t=parseInt(localStorage.getItem('vb-thr'),10);if(t)$('thrIn').value=t;}catch(e){}
+  S.thr=+$('thrIn').value;$('thrVal').textContent=S.thr;
+  $('thrIn').addEventListener('input',function(){
+    S.thr=+this.value;$('thrVal').textContent=S.thr;
+    try{localStorage.setItem('vb-thr',this.value);}catch(e){}
+  });
+  $('vol').addEventListener('input',applyVol);
+  $('micBtn').addEventListener('click',function(){
+    if(!S.mic){startMic();}
+    else if(!S.connected){stopMic();}
+    else{S.paused=!S.paused;render();}
+  });
+  $('bCreate').addEventListener('click',createOffer);
+  $('bCopy').addEventListener('click',function(){copyText($('bOffer').value,'bMsg');});
+  $('bShare').addEventListener('click',function(){shareText($('bOffer').value,'bMsg');});
+  $('bConnect').addEventListener('click',acceptAnswer);
+  $('pJoin').addEventListener('click',join);
+  $('pCopy').addEventListener('click',function(){copyText($('pAns').value,'pMsg');});
+  $('pShare').addEventListener('click',function(){shareText($('pAns').value,'pMsg');});
+  ['bRepair','pRepair','lostRepair'].forEach(function(id){$(id).addEventListener('click',resetLink);});
+  $('tabBaby').addEventListener('click',function(){setMode('baby');});
+  $('tabParent').addEventListener('click',function(){setMode('parent');});
+  setInterval(babyTick,100);setInterval(parentTick,200);
+  var m='baby';try{m=localStorage.getItem('vb-mode')||'baby';}catch(e){}
+  setMode(m==='parent'?'parent':'baby');
+}
+init();
+})();
+</script>
+</body>
+</html>
