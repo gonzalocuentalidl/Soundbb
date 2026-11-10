@@ -138,7 +138,7 @@ input.pin-in{width:100%;font-size:30px;text-align:center;letter-spacing:.2em;fon
       <details><summary>Ajustes</summary>
         <div class="read"><span>Nivel del cuarto <b id="pDb">−90 dB</b></span></div>
         <label for="pThr">Sensibilidad: el bebé envía sonido por encima de <span id="pThrVal">−45</span> dB</label>
-        <input type="range" id="pThr" min="-70" max="-15" value="-45">
+        <input type="range" id="pThr" min="-85" max="-15" value="-45">
         <p class="foot">Más a la izquierda = más sensible. Compara con el nivel del cuarto de arriba.</p>
         <div class="read" style="margin-top:6px"><span id="pAud">Audio: —</span></div>
         <div class="row"><button class="btn" id="pRepair">Emparejar de nuevo</button></div>
@@ -164,8 +164,8 @@ var N=28;
 var SIGNAL=window.VB_SIGNAL||'https://ntfy.sh/'; /* servicio público gratuito que solo reparte el PIN; el audio no pasa por él */
 var SILENT='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
 var S={pc:null,dc:null,mic:null,sendTrack:null,ctx:null,an:null,buf:null,lvl:-90,lastLoud:0,paused:false,
-  connected:false,thr:-45,hold:5000,lastSend:0,wake:null,remote:null,audio:null,
-  rlvl:-90,lastMsg:0,lostOn:false,lastSoundAt:null,beepT:null,mode:'baby',es:null,esTimer:null,bytes:0,statT:0,thrTouch:0};
+  connected:false,thr:-60,hold:5000,lastSend:0,wake:null,remote:null,audio:null,
+  rlvl:-90,lastMsg:0,lostOn:false,lastSoundAt:null,beepT:null,mode:'baby',es:null,esTimer:null,bytes:0,statT:0,thrTouch:0,lastActive:false};
 window.__vb=S;
 
 /* ---------- utilidades ---------- */
@@ -301,7 +301,7 @@ async function createPin(){
     pc.addTrack(S.sendTrack,S.mic);
     S.dc=pc.createDataChannel('ctl');
     S.dc.onmessage=function(ev){
-      try{var o=JSON.parse(ev.data);if(typeof o.thr==='number'&&o.thr>=-70&&o.thr<=-15){setThr(o.thr);}}catch(_){}
+      try{var o=JSON.parse(ev.data);if(typeof o.thr==='number'&&o.thr>=-85&&o.thr<=-15){setThr(o.thr);}}catch(_){}
     };
     S.dc.onclose=function(){if(S.dc&&S.connected&&S.mode==='baby'){onDropped();}};
     await pc.setLocalDescription(await pc.createOffer());
@@ -336,9 +336,9 @@ function babyTick(){
     S.lvl=Math.max(-90,rms>0?20*Math.log10(rms):-90);
     if(!S.paused&&S.lvl>S.thr)S.lastLoud=now;
     active=!S.paused&&(now-S.lastLoud<S.hold);
-    S.sendTrack.enabled=active&&S.connected;
-    if(S.dc&&S.dc.readyState==='open'&&now-S.lastSend>300){
-      S.lastSend=now;
+    S.sendTrack.enabled=!S.paused;
+    if(S.dc&&S.dc.readyState==='open'&&(now-S.lastSend>300||active!==S.lastActive)){
+      S.lastSend=now;S.lastActive=active;
       try{S.dc.send(JSON.stringify({d:Math.round(S.lvl),a:active?1:0,t:S.thr}));}catch(e){}
     }
   }
@@ -348,7 +348,7 @@ function babyTick(){
   if(!S.mic){st='Micrófono apagado';}
   else if(!S.connected){st='Micrófono listo · falta emparejar';dot=' warn';}
   else if(S.paused){st='En pausa';dot=' warn';}
-  else{st=active?'Enviando sonido':'Escuchando en silencio';dot=' ok';snd=active?'Los padres te están oyendo':'Silencio: no se envía nada';}
+  else{st=active?'Enviando sonido':'Escuchando en silencio';dot=' ok';snd=active?'Los padres te están oyendo':'Silencio: los padres no oyen nada';}
   $('bStatus').textContent=st;$('bDot').className='dot'+dot;$('bSend').innerHTML=snd;
 }
 
@@ -394,6 +394,7 @@ async function answer(topic,m){
         try{var o=JSON.parse(ev.data);S.rlvl=o.d;S.lastMsg=Date.now();
           if(typeof o.t==='number'&&Date.now()-S.thrTouch>2500){$('pThr').value=o.t;$('pThrVal').textContent=o.t;}
           if(o.a)S.lastSoundAt=new Date();
+          if(S.audio&&S.remote)S.audio.muted=!o.a;
           if(S.lostOn)setLost(false);}catch(_){}
       };
     };
@@ -419,6 +420,7 @@ function beep(){
 }
 function setLost(v){
   S.lostOn=v;show('lost',v);
+  if(v&&S.audio)S.audio.muted=false;
   document.title=v?'⚠ Conexión perdida':'Vigilabebés Local';
   clearInterval(S.beepT);
   if(v){beep();S.beepT=setInterval(beep,2000);}
@@ -468,7 +470,7 @@ function init(){
   if(!window.RTCPeerConnection||!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.crypto||!crypto.subtle){
     $('support').textContent='Este navegador no permite micrófono o conexión directa. Abre la página con Safari desde el enlace https de GitHub Pages.';
   }
-  try{var t=parseInt(localStorage.getItem('vb-thr'),10);if(t>=-70&&t<=-15)S.thr=t;}catch(e){}
+  try{var t=parseInt(localStorage.getItem('vb-thr'),10);if(t>=-85&&t<=-15)S.thr=t;}catch(e){}
   setThr(S.thr);
   $('pThr').value=S.thr;$('pThrVal').textContent=S.thr;
   $('pThr').addEventListener('input',function(){
