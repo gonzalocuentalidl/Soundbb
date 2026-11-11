@@ -108,6 +108,8 @@ input.pin-in{width:100%;font-size:32px;text-align:center;letter-spacing:.2em;fon
 .group h3{font-size:16px;margin:0 0 6px}
 .group details{margin:0}
 summary{cursor:pointer;font-weight:600;min-height:40px;display:flex;align-items:center;font-family:var(--font-head);font-size:16px}
+.langrow{margin-top:18px;display:flex;gap:10px;align-items:center;justify-content:center;color:var(--muted)}
+.langsel{font:inherit;font-size:16px;min-height:44px;padding:0 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:inherit}
 .hist div{font-size:14px;padding:5px 0;border-bottom:1px solid var(--line)}
 .hist div span{color:var(--muted);font-family:var(--font-mono);font-size:13px;margin-right:8px}
 @media (prefers-reduced-motion:reduce){.ring{transition:none;animation:none!important}}
@@ -117,16 +119,17 @@ summary{cursor:pointer;font-weight:600;min-height:40px;display:flex;align-items:
 <main>
   <header class="top">
     <div class="brand"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="9" fill="none" stroke="var(--accent)" stroke-width="3"/><path d="M29 20c6 0 8 8 4 12" fill="none" stroke="var(--accent)" stroke-width="3" stroke-dasharray="1 5" stroke-linecap="round"/><path d="M11 20c-6 0-8-8-4-12" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/></svg><span>Vigilabebés</span></div>
-    <button class="icon-btn hide" id="gear" aria-label="Ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h9M19 7h1M4 17h1M11 17h9"/><circle cx="16" cy="7" r="2.4"/><circle cx="8" cy="17" r="2.4"/></svg></button>
+    <button class="icon-btn hide" id="gear" data-ia="gearA" aria-label="Ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h9M19 7h1M4 17h1M11 17h9"/><circle cx="16" cy="7" r="2.4"/><circle cx="8" cy="17" r="2.4"/></svg></button>
   </header>
   <p class="msg err" id="support"></p>
 
   <!-- ELEGIR ROL (primera vez) -->
   <section id="picker" class="hide">
-    <h1>¿Qué móvil es este?</h1>
-    <p class="lead">Se elige una vez y se recuerda.</p>
-    <button class="pick" id="pickBaby"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><span><b>Móvil del bebé</b><small>Se queda en la habitación y envía el sonido.</small></span></button>
-    <button class="pick" id="pickParent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 9a4 4 0 0 1 0 6M19 6.5a8 8 0 0 1 0 11"/></svg><span><b>Móvil de padres</b><small>Escucha al bebé desde cualquier sitio de casa.</small></span></button>
+    <h1 data-i="pickT">¿Qué móvil es este?</h1>
+    <p class="lead" data-i="pickL">Se elige una vez y se recuerda.</p>
+    <button class="pick" id="pickBaby"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><span><b data-i="pickBabyT">Móvil del bebé</b><small data-i="pickBabyD">Se queda en la habitación y envía el sonido.</small></span></button>
+    <button class="pick" id="pickParent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 9a4 4 0 0 1 0 6M19 6.5a8 8 0 0 1 0 11"/></svg><span><b data-i="pickParT">Móvil de padres</b><small data-i="pickParD">Escucha al bebé desde cualquier sitio de casa.</small></span></button>
+    <div class="langrow"><label for="langP" data-i="langL">Idioma</label><select id="langP" class="langsel"></select></div>
   </section>
 
   <!-- MÓVIL DEL BEBÉ -->
@@ -139,20 +142,20 @@ summary{cursor:pointer;font-weight:600;min-height:40px;display:flex;align-items:
     <p class="substate" id="bSend">Pulsa el círculo para empezar</p>
     <div class="card hide" id="bPair">
       <div id="bNew">
-        <h2>Emparejar con el móvil de padres</h2>
-        <p class="foot" style="margin-top:0">Pulsa el botón: saldrá un PIN de 6 cifras. Escríbelo en el móvil de padres. Solo hace falta la primera vez.</p>
-        <div class="row"><button class="btn primary" id="bCreate">Crear PIN</button></div>
+        <h2 data-i="pairBH">Emparejar con el móvil de padres</h2>
+        <p class="foot" style="margin-top:0" data-i="pairBP">Pulsa el botón: saldrá un PIN de 6 cifras. Escríbelo en el móvil de padres. Solo hace falta la primera vez.</p>
+        <div class="row"><button class="btn primary" id="bCreate" data-i="btnPin">Crear PIN</button></div>
         <div class="pin hide" id="bPin" aria-live="polite">------</div>
       </div>
       <div id="bKnown" class="hide"><p class="foot" style="margin-top:0" id="bKnownTxt"></p></div>
       <p class="msg" id="bMsg" role="status"></p>
     </div>
-    <p class="hint">Deja este móvil cerca de la cuna, mejor cargando.</p>
+    <p class="hint" data-i="hintBaby">Deja este móvil cerca de la cuna, mejor cargando.</p>
   </section>
 
   <!-- MÓVIL DE PADRES -->
   <section id="parent" class="hide">
-    <div class="banner hide" id="lost" role="alert">Conexión perdida. Intentando reconectar solo…<br><button class="btn" id="lostRepair">Emparejar con otro móvil</button></div>
+    <div class="banner hide" id="lost" role="alert"><span data-i="lostB">Conexión perdida. Intentando reconectar solo…</span><br><button class="btn" id="lostRepair" data-i="btnForget">Emparejar con otro móvil</button></div>
     <div id="pMain" class="hide">
       <div class="hero" id="pHero" data-state="search">
         <i class="ring r1"></i><i class="ring r2"></i>
@@ -160,83 +163,87 @@ summary{cursor:pointer;font-weight:600;min-height:40px;display:flex;align-items:
       </div>
       <h2 class="state" id="pStatus">Buscando al bebé…</h2>
       <p class="substate" id="pLast">En el móvil del bebé, pulsa Activar</p>
-      <div class="row center hide" id="pTap"><button class="btn primary" id="pTapBtn">Toca para activar el sonido</button></div>
-      <div class="row center hide" id="pSearchRow"><button class="btn primary" id="pSearchBtn">Buscar de nuevo</button></div>
-      <p class="hint">El volumen se sube con los botones del iPhone.</p>
+      <div class="row center hide" id="pTap"><button class="btn primary" id="pTapBtn" data-i="btnTap">Toca para activar el sonido</button></div>
+      <div class="row center hide" id="pSearchRow"><button class="btn primary" id="pSearchBtn" data-i="btnAgain">Buscar de nuevo</button></div>
+      <p class="msg err hide" id="pTip"></p>
+      <p class="hint" data-i="hintVol">El volumen se sube con los botones del iPhone.</p>
     </div>
     <div class="card" id="pPair">
-      <h2>Emparejar con el móvil del bebé</h2>
-      <p class="foot" style="margin-top:0">En el móvil del bebé pulsa <b>Crear PIN</b> y escribe aquí las 6 cifras. Solo hace falta la primera vez.</p>
-      <input class="pin-in" id="pPin" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code" placeholder="000000" aria-label="PIN de 6 cifras">
-      <div class="row"><button class="btn primary" id="pJoin">Conectar</button></div>
+      <h2 data-i="pairPH">Emparejar con el móvil del bebé</h2>
+      <p class="foot" style="margin-top:0" data-ih="pairPP">En el móvil del bebé pulsa <b>Crear PIN</b> y escribe aquí las 6 cifras. Solo hace falta la primera vez.</p>
+      <input class="pin-in" id="pPin" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code" placeholder="000000" data-ia="pinA" aria-label="PIN de 6 cifras">
+      <div class="row"><button class="btn primary" id="pJoin" data-i="btnConnect">Conectar</button></div>
       <p class="msg" id="pMsg" role="status"></p>
     </div>
   </section>
 </main>
 
 <!-- AJUSTES -->
-<div class="sheet hide" id="sheet" role="dialog" aria-label="Ajustes">
+<div class="sheet hide" id="sheet" role="dialog" data-ia="setTitle" aria-label="Ajustes">
   <div class="sheet-in">
-    <div class="sheet-top"><h2>Ajustes</h2><button class="btn primary" id="sheetClose">Listo</button></div>
+    <div class="sheet-top"><h2 data-i="setTitle">Ajustes</h2><button class="btn primary" id="sheetClose" data-i="btnDone">Listo</button></div>
 
     <div id="setBaby" class="hide">
-      <div class="group"><h3>Sensibilidad</h3>
-        <div class="read"><span>Nivel del cuarto</span><b id="bDb">−90 dB</b></div>
-        <div class="read"><span>Envía sonido por encima de</span><b id="thrVal">−60 dB</b></div>
-        <p class="foot">Se cambia desde el móvil de padres.</p>
+      <div class="group"><h3 data-i="gSens">Sensibilidad</h3>
+        <div class="read"><span data-i="lRoom">Nivel del cuarto</span><b id="bDb">−90 dB</b></div>
+        <div class="read"><span data-i="lSendsAbove">Envía sonido por encima de</span><b id="thrVal">−60 dB</b></div>
+        <p class="foot" data-i="hintFromParent">Se cambia desde el móvil de padres.</p>
       </div>
-      <div class="group"><h3>Pantalla</h3>
-        <label class="chk"><input type="checkbox" id="bAwake"> Mantener la pantalla encendida</label>
-        <p class="foot">Apagado, la pantalla se bloquea sola y se ahorra batería. El sonido sigue enviándose.</p>
+      <div class="group"><h3 data-i="gScreen">Pantalla</h3>
+        <label class="chk"><input type="checkbox" id="bAwake"> <span data-i="chkAwake">Mantener la pantalla encendida</span></label>
+        <p class="foot" data-i="hintAwakeB">Apagado, la pantalla se bloquea sola y se ahorra batería. El sonido sigue enviándose.</p>
       </div>
-      <div class="group"><h3>Emparejamiento</h3>
-        <button class="btn" id="bRepair">Emparejar con otro móvil</button>
+      <div class="group"><h3 data-i="gPair">Emparejamiento</h3>
+        <button class="btn" id="bRepair" data-i="btnForget">Emparejar con otro móvil</button>
       </div>
-      <div class="group tlog">      <details ><summary>Registro de pruebas</summary>
-        <p class="foot" style="margin-top:6px">Guarda en este móvil lo que ocurre (sonidos, cortes, reconexiones, pantalla bloqueada) para analizarlo después. Anota el % de batería cuando quieras.</p>
-        <div class="row"><input id="bNote" class="code" style="flex:1;min-width:0" placeholder="Nota, p. ej. batería 80 %" aria-label="Nota"><button class="btn" id="bNoteBtn">Anotar</button></div>
-        <div class="row"><button class="btn primary" id="bExport">Exportar</button><button class="btn" id="bClear">Borrar</button></div>
+      <div class="group tlog">      <details ><summary data-i="sumTest">Registro de pruebas</summary>
+        <p class="foot" style="margin-top:6px" data-i="testHelp">Guarda en este móvil lo que ocurre (sonidos, cortes, reconexiones, pantalla bloqueada) para analizarlo después. Anota el % de batería cuando quieras.</p>
+        <div class="row"><input id="bNote" class="code" style="flex:1;min-width:0" data-ip="phNote" data-ia="noteA" placeholder="Nota, p. ej. batería 80 %" aria-label="Nota"><button class="btn" id="bNoteBtn" data-i="btnNote">Anotar</button></div>
+        <div class="row"><button class="btn primary" id="bExport" data-i="btnExp">Exportar</button><button class="btn" id="bClear" data-i="btnClr">Borrar</button></div>
         <p class="msg" id="bLogMsg"></p>
       </details>
 </div>
     </div>
 
     <div id="setParent" class="hide">
-      <div class="group"><h3>Sensibilidad</h3>
-        <div class="read"><span>Nivel del cuarto</span><b id="pDb">−90 dB</b></div>
-        <label for="pThr">El bebé envía sonido por encima de <span id="pThrVal">−60</span> dB</label>
+      <div class="group"><h3 data-i="gSens">Sensibilidad</h3>
+        <div class="read"><span data-i="lRoom">Nivel del cuarto</span><b id="pDb">−90 dB</b></div>
+        <label for="pThr"><span data-i="lBabySends">El bebé envía sonido por encima de</span> <span id="pThrVal">−60</span> dB</label>
         <input type="range" id="pThr" min="-85" max="-15" value="-60">
-        <p class="foot">Más a la izquierda = más sensible. Compara con el nivel del cuarto.</p>
-        <div class="row"><button class="btn" id="pCal">Calibrar (10 s de silencio)</button></div>
+        <p class="foot" data-i="hintSens">Más a la izquierda = más sensible. Compara con el nivel del cuarto.</p>
+        <div class="row"><button class="btn" id="pCal" data-i="btnCal">Calibrar (10 s de silencio)</button></div>
         <p class="msg" id="pCalMsg" role="status"></p>
       </div>
       <div class="group">
-        <details id="pHistBox"><summary>Historial</summary>
+        <details id="pHistBox"><summary data-i="sumHist">Historial</summary>
           <p class="foot" id="pHistSum" style="margin-top:6px"></p>
           <div class="hist" id="pHist"></div>
         </details>
       </div>
-      <div class="group"><h3>Pantalla</h3>
-        <label class="chk"><input type="checkbox" id="pAwake"> Mantener la pantalla encendida</label>
-        <p class="foot">Apagado, la pantalla se bloquea sola y se ahorra batería.</p>
+      <div class="group"><h3 data-i="gScreen">Pantalla</h3>
+        <label class="chk"><input type="checkbox" id="pAwake"> <span data-i="chkAwake">Mantener la pantalla encendida</span></label>
+        <p class="foot" data-i="hintAwakeP">Apagado, la pantalla se bloquea sola y se ahorra batería.</p>
       </div>
-      <div class="group"><h3>Conexión</h3>
+      <div class="group"><h3 data-i="gConn">Conexión</h3>
         <div class="read"><span id="pAud">Audio: —</span></div>
-        <div class="row"><button class="btn" id="pRepair">Emparejar con otro móvil</button></div>
+        <label class="chk"><input type="checkbox" id="pIps"> <span data-i="chkCompat">Compatibilidad: pedir permiso de micrófono al conectar</span></label>
+        <p class="foot" data-i="hintCompat">Actívalo solo si el móvil de padres no consigue conectar.</p>
+        <div class="row"><button class="btn" id="pRepair" data-i="btnForget">Emparejar con otro móvil</button></div>
       </div>
-      <div class="group tlog">      <details ><summary>Registro de pruebas</summary>
-        <p class="foot" style="margin-top:6px">Guarda en este móvil lo que ocurre (sonidos, cortes, reconexiones, pantalla bloqueada) para analizarlo después. Anota el % de batería cuando quieras.</p>
-        <div class="row"><input id="pNote" class="code" style="flex:1;min-width:0" placeholder="Nota, p. ej. batería 80 %" aria-label="Nota"><button class="btn" id="pNoteBtn">Anotar</button></div>
-        <div class="row"><button class="btn primary" id="pExport">Exportar</button><button class="btn" id="pClear">Borrar</button></div>
+      <div class="group tlog">      <details ><summary data-i="sumTest">Registro de pruebas</summary>
+        <p class="foot" style="margin-top:6px" data-i="testHelp">Guarda en este móvil lo que ocurre (sonidos, cortes, reconexiones, pantalla bloqueada) para analizarlo después. Anota el % de batería cuando quieras.</p>
+        <div class="row"><input id="pNote" class="code" style="flex:1;min-width:0" data-ip="phNote" data-ia="noteA" placeholder="Nota, p. ej. batería 80 %" aria-label="Nota"><button class="btn" id="pNoteBtn" data-i="btnNote">Anotar</button></div>
+        <div class="row"><button class="btn primary" id="pExport" data-i="btnExp">Exportar</button><button class="btn" id="pClear" data-i="btnClr">Borrar</button></div>
         <p class="msg" id="pLogMsg"></p>
       </details>
 </div>
     </div>
 
-    <div class="group"><h3>Este móvil</h3>
-      <button class="btn" id="changeRole">Cambiar el rol de este móvil</button>
+    <div class="group"><h3 data-i="langL">Idioma</h3><select id="lang" class="langsel"></select></div>
+    <div class="group"><h3 data-i="gThis">Este móvil</h3>
+      <button class="btn" id="changeRole" data-i="btnRole">Cambiar el rol de este móvil</button>
       <p class="foot" id="verTxt"></p>
-      <p class="foot">Los dos móviles deben estar en el mismo WiFi, con internet para encontrarse. El audio va directo entre ellos y no gasta datos móviles.</p>
+      <p class="foot" data-i="hintWifi">Los dos móviles deben estar en el mismo WiFi, con internet para encontrarse. El audio va directo entre ellos y no gasta datos móviles.</p>
     </div>
   </div>
 </div>
@@ -246,14 +253,115 @@ summary{cursor:pointer;font-weight:600;min-height:40px;display:flex;align-items:
 'use strict';
 var $=function(i){return document.getElementById(i);};
 var SIGNAL=window.VB_SIGNAL||'https://ntfy.sh/'; /* servicio que solo reparte mensajes para encontrarse; el audio no pasa por él. Para usar el servicio propio, cambia esta URL (ver README) */
-var VERSION='4.0';
+var VERSION='5.1';
+var I18N={
+es:{pickT:'¿Qué móvil es este?',pickL:'Se elige una vez y se recuerda.',pickBabyT:'Móvil del bebé',pickBabyD:'Se queda en la habitación y envía el sonido.',pickParT:'Móvil de padres',pickParD:'Escucha al bebé desde cualquier sitio de casa.',langL:'Idioma',gearA:'Ajustes',
+micAct:'Activar',micOff:'Apagar',micPause:'Pausar',micResume:'Reanudar',
+bOff:'Micrófono apagado',bOffS:'Pulsa el círculo para empezar',bWait:'Esperando a los padres',bWaitS:'Se conectarán solos',bReady:'Listo para emparejar',bReadyS:'Crea un PIN y escríbelo en el móvil de padres',bPause:'En pausa',bPauseS:'Los padres no oyen nada',bLive:'Se oye algo',bLiveS:'Los padres están escuchando',bIdle:'Todo en silencio',bIdleS:'No se envía nada hasta que haya ruido',bCal:'Calibrando…',bCalS:'Midiendo el silencio del cuarto',
+pairBH:'Emparejar con el móvil de padres',pairBP:'Pulsa el botón: saldrá un PIN de 6 cifras. Escríbelo en el móvil de padres. Solo hace falta la primera vez.',btnPin:'Crear PIN',hintBaby:'Deja este móvil cerca de la cuna, mejor cargando.',
+knownOn:'Emparejado con un móvil de padres. Se conectarán solos.',knownOff:'Emparejado con un móvil de padres. Pulsa el círculo y se conectará solo.',
+lostB:'Conexión perdida. Intentando reconectar solo…',btnForget:'Emparejar con otro móvil',
+pSearch:'Buscando al bebé…',pNone:'No encuentro al bebé',pLost:'Sin señal del bebé',pSound:'Se oye al bebé',pQuiet:'Todo tranquilo',pLastAt:'Último sonido a las {t}',pNothing:'Aún no se ha oído nada',pPausedHint:'Activa el micrófono en el móvil del bebé y pulsa Buscar de nuevo',pWaitHint:'En el móvil del bebé, pulsa Activar',btnTap:'Toca para activar el sonido',btnAgain:'Buscar de nuevo',hintVol:'El volumen se sube con los botones del iPhone.',
+pairPH:'Emparejar con el móvil del bebé',pairPP:'En el móvil del bebé pulsa <b>Crear PIN</b> y escribe aquí las 6 cifras. Solo hace falta la primera vez.',pinA:'PIN de 6 cifras',btnConnect:'Conectar',
+setTitle:'Ajustes',btnDone:'Listo',gSens:'Sensibilidad',lRoom:'Nivel del cuarto',lSendsAbove:'Envía sonido por encima de',hintFromParent:'Se cambia desde el móvil de padres.',gScreen:'Pantalla',chkAwake:'Mantener la pantalla encendida',hintAwakeB:'Apagado, la pantalla se bloquea sola y se ahorra batería. El sonido sigue enviándose.',hintAwakeP:'Apagado, la pantalla se bloquea sola y se ahorra batería.',gPair:'Emparejamiento',lBabySends:'El bebé envía sonido por encima de',hintSens:'Más a la izquierda = más sensible. Compara con el nivel del cuarto.',btnCal:'Calibrar (10 s de silencio)',sumHist:'Historial',gConn:'Conexión',chkCompat:'Compatibilidad: pedir permiso de micrófono al conectar',hintCompat:'Actívalo solo si el móvil de padres no consigue conectar.',compatTip:'Si no conecta, prueba a activar Compatibilidad en Ajustes.',gThis:'Este móvil',btnRole:'Cambiar el rol de este móvil',hintWifi:'Los dos móviles deben estar en el mismo WiFi, con internet para encontrarse. El audio va directo entre ellos y no gasta datos móviles.',version:'Versión',
+sumTest:'Registro de pruebas',testHelp:'Guarda en este móvil lo que ocurre (sonidos, cortes, reconexiones, pantalla bloqueada) para analizarlo después. Anota el % de batería cuando quieras.',phNote:'Nota, p. ej. batería 80 %',noteA:'Nota',btnNote:'Anotar',btnExp:'Exportar',btnClr:'Borrar',
+mCreating:'Creando PIN…',mPinShown:'Escribe este PIN en el móvil de padres. Esperando…',mPinExpired:'El PIN caducó. Pulsa Crear PIN otra vez.',mPinFail:'No se pudo crear el PIN ({e}). Comprueba que hay internet por WiFi.',mWaitParents:'Esperando al móvil de padres…',mPrepFail:'No se pudo preparar la conexión ({e}). Reintentando…',mConnecting:'Conectando…',mLostRe:'Se perdió la conexión. Reconectando…',mLostPin:'Se perdió la conexión. Pulsa Crear PIN para emparejar de nuevo.',mMicFail:'No se pudo usar el micrófono. Permite el acceso en Ajustes de Safari.',mNoWorklet:'Este navegador no puede procesar el audio (hace falta iOS 14.5 o superior).',mPin6:'El PIN tiene 6 cifras.',mSeekBaby:'Buscando el móvil del bebé…',mPinNotFound:'No encuentro ese PIN o no se pudo conectar. Revisa que sigue en pantalla en el móvil del bebé y que los dos tenéis internet por WiFi.',mConnFail:'No se pudo conectar: {e}',mError:'Error: {e}',mCalRun:'Calibrando… {n} s. Mantén el cuarto en silencio.',mCalDone:'Listo: sensibilidad ajustada a {t} dB.',mCalAsk:'Pidiendo calibración…',mCalFirst:'Primero hay que conectar con el bebé.',
+cForget:'¿Olvidar el emparejamiento? Para volver a conectar necesitarás un PIN nuevo.',cRole:'¿Cambiar el rol de este móvil? Se desconectará.',cClear:'¿Borrar el registro de pruebas de este móvil?',mForgotP:'El móvil de padres olvidó el emparejamiento.',mForgotB:'El móvil del bebé olvidó el emparejamiento.',mUnsup:'Este navegador no permite micrófono o conexión directa. Abre la página con Safari desde el enlace https de GitHub Pages.',mSvcErr:'Servicio de emparejamiento: error {n}',
+hSnd:'Sonido de {d} s (pico {p} dB)',hLost:'Se perdió la conexión',hBack:'Conexión recuperada tras {d} s',hSum:'Últimas 12 h: {s} sonidos y {l} cortes de conexión. Cada sonido incluye 5 s de margen.',hNone:'Aún no hay nada.',
+lExp:'{n} eventos exportados.',lDl:'{n} eventos descargados.',lCopy:'Copiado al portapapeles ({n} eventos).',lFail:'No se pudo exportar.',lNoted:'Anotado. {n} eventos guardados.',lCleared:'Registro borrado.',
+aPlay:'reproduciendo',aPaused:'en pausa',aLine:'Audio: {kb} kB recibidos · {st}',titleLost:'⚠ Conexión perdida'},
+en:{pickT:'Which phone is this?',pickL:'Choose once; it is remembered.',pickBabyT:'Baby phone',pickBabyD:'Stays in the room and sends the sound.',pickParT:"Parents' phone",pickParD:'Listens to the baby from anywhere in the house.',langL:'Language',gearA:'Settings',
+micAct:'Turn on',micOff:'Turn off',micPause:'Pause',micResume:'Resume',
+bOff:'Microphone off',bOffS:'Tap the circle to start',bWait:'Waiting for the parents',bWaitS:'They will connect on their own',bReady:'Ready to pair',bReadyS:"Create a PIN and enter it on the parents' phone",bPause:'Paused',bPauseS:'The parents hear nothing',bLive:'Sound detected',bLiveS:'The parents are listening',bIdle:'All quiet',bIdleS:'Nothing is sent until there is noise',bCal:'Calibrating…',bCalS:"Measuring the room's silence",
+pairBH:"Pair with the parents' phone",pairBP:"Tap the button: a 6-digit PIN will appear. Enter it on the parents' phone. Only needed the first time.",btnPin:'Create PIN',hintBaby:'Keep this phone near the crib, ideally charging.',
+knownOn:"Paired with a parents' phone. They will connect on their own.",knownOff:"Paired with a parents' phone. Tap the circle and it will connect on its own.",
+lostB:'Connection lost. Trying to reconnect on its own…',btnForget:'Pair with another phone',
+pSearch:'Looking for the baby…',pNone:"Can't find the baby",pLost:'No signal from the baby',pSound:'The baby can be heard',pQuiet:'All calm',pLastAt:'Last sound at {t}',pNothing:'Nothing heard yet',pPausedHint:'Turn on the microphone on the baby phone and tap Search again',pWaitHint:'On the baby phone, tap Turn on',btnTap:'Tap to turn on the sound',btnAgain:'Search again',hintVol:'Use the iPhone volume buttons to turn it up.',
+pairPH:'Pair with the baby phone',pairPP:'On the baby phone tap <b>Create PIN</b> and enter the 6 digits here. Only needed the first time.',pinA:'6-digit PIN',btnConnect:'Connect',
+setTitle:'Settings',btnDone:'Done',gSens:'Sensitivity',lRoom:'Room level',lSendsAbove:'Sends sound above',hintFromParent:"Changed from the parents' phone.",gScreen:'Screen',chkAwake:'Keep the screen on',hintAwakeB:'When off, the screen locks by itself and saves battery. The sound keeps being sent.',hintAwakeP:'When off, the screen locks by itself and saves battery.',gPair:'Pairing',lBabySends:'The baby sends sound above',hintSens:'Further left = more sensitive. Compare with the room level.',btnCal:'Calibrate (10 s of silence)',sumHist:'History',gConn:'Connection',chkCompat:'Compatibility: ask for microphone permission when connecting',hintCompat:"Turn it on only if the parents' phone can't connect.",compatTip:"If it won't connect, try turning on Compatibility in Settings.",gThis:'This phone',btnRole:"Change this phone's role",hintWifi:'Both phones must be on the same WiFi, with internet to find each other. The audio goes directly between them and uses no mobile data.',version:'Version',
+sumTest:'Test log',testHelp:'Saves on this phone what happens (sounds, drops, reconnections, locked screen) so it can be analysed later. Note the battery % whenever you like.',phNote:'Note, e.g. battery 80 %',noteA:'Note',btnNote:'Add note',btnExp:'Export',btnClr:'Delete',
+mCreating:'Creating PIN…',mPinShown:"Enter this PIN on the parents' phone. Waiting…",mPinExpired:'The PIN expired. Tap Create PIN again.',mPinFail:'Could not create the PIN ({e}). Check that the WiFi has internet.',mWaitParents:"Waiting for the parents' phone…",mPrepFail:'Could not prepare the connection ({e}). Retrying…',mConnecting:'Connecting…',mLostRe:'Connection lost. Reconnecting…',mLostPin:'Connection lost. Tap Create PIN to pair again.',mMicFail:'Could not use the microphone. Allow access in Safari settings.',mNoWorklet:"This browser can't process the audio (iOS 14.5 or later is required).",mPin6:'The PIN has 6 digits.',mSeekBaby:'Looking for the baby phone…',mPinNotFound:"Can't find that PIN or couldn't connect. Check it is still on screen on the baby phone and that both phones have internet over WiFi.",mConnFail:'Could not connect: {e}',mError:'Error: {e}',mCalRun:'Calibrating… {n} s. Keep the room quiet.',mCalDone:'Done: sensitivity set to {t} dB.',mCalAsk:'Requesting calibration…',mCalFirst:'Connect to the baby first.',
+cForget:"Forget the pairing? You'll need a new PIN to connect again.",cRole:"Change this phone's role? It will disconnect.",cClear:"Delete this phone's test log?",mForgotP:"The parents' phone forgot the pairing.",mForgotB:'The baby phone forgot the pairing.',mUnsup:"This browser doesn't allow microphone or direct connection. Open the page in Safari from the https GitHub Pages link.",mSvcErr:'Pairing service: error {n}',
+hSnd:'Sound for {d} s (peak {p} dB)',hLost:'Connection lost',hBack:'Connection restored after {d} s',hSum:'Last 12 h: {s} sounds and {l} connection drops. Each sound includes 5 s of margin.',hNone:'Nothing yet.',
+lExp:'{n} events exported.',lDl:'{n} events downloaded.',lCopy:'Copied to clipboard ({n} events).',lFail:'Could not export.',lNoted:'Noted. {n} events saved.',lCleared:'Log deleted.',
+aPlay:'playing',aPaused:'paused',aLine:'Audio: {kb} kB received · {st}',titleLost:'⚠ Connection lost'},
+de:{pickT:'Welches Handy ist das?',pickL:'Einmal wählen, wird gespeichert.',pickBabyT:'Baby-Handy',pickBabyD:'Bleibt im Zimmer und sendet den Ton.',pickParT:'Eltern-Handy',pickParD:'Hört das Baby von überall im Haus.',langL:'Sprache',gearA:'Einstellungen',
+micAct:'Einschalten',micOff:'Ausschalten',micPause:'Pause',micResume:'Fortsetzen',
+bOff:'Mikrofon aus',bOffS:'Tippe auf den Kreis zum Starten',bWait:'Warte auf die Eltern',bWaitS:'Sie verbinden sich von selbst',bReady:'Bereit zum Koppeln',bReadyS:'Erstelle eine PIN und gib sie am Eltern-Handy ein',bPause:'Pausiert',bPauseS:'Die Eltern hören nichts',bLive:'Ton erkannt',bLiveS:'Die Eltern hören mit',bIdle:'Alles ruhig',bIdleS:'Es wird nichts gesendet, bis es laut wird',bCal:'Kalibriere…',bCalS:'Messe die Ruhe im Zimmer',
+pairBH:'Mit dem Eltern-Handy koppeln',pairBP:'Tippe auf die Schaltfläche: Es erscheint eine 6-stellige PIN. Gib sie am Eltern-Handy ein. Nur beim ersten Mal nötig.',btnPin:'PIN erstellen',hintBaby:'Lass dieses Handy in der Nähe des Bettchens, am besten am Ladegerät.',
+knownOn:'Mit einem Eltern-Handy gekoppelt. Sie verbinden sich von selbst.',knownOff:'Mit einem Eltern-Handy gekoppelt. Tippe auf den Kreis, dann verbindet es sich von selbst.',
+lostB:'Verbindung verloren. Versuche automatisch, neu zu verbinden…',btnForget:'Mit anderem Handy koppeln',
+pSearch:'Suche das Baby…',pNone:'Baby nicht gefunden',pLost:'Kein Signal vom Baby',pSound:'Das Baby ist zu hören',pQuiet:'Alles ruhig',pLastAt:'Letzter Ton um {t}',pNothing:'Noch nichts zu hören',pPausedHint:'Schalte am Baby-Handy das Mikrofon ein und tippe auf Erneut suchen',pWaitHint:'Tippe am Baby-Handy auf Einschalten',btnTap:'Tippen, um den Ton zu aktivieren',btnAgain:'Erneut suchen',hintVol:'Die Lautstärke stellst du mit den iPhone-Tasten ein.',
+pairPH:'Mit dem Baby-Handy koppeln',pairPP:'Tippe am Baby-Handy auf <b>PIN erstellen</b> und gib hier die 6 Ziffern ein. Nur beim ersten Mal nötig.',pinA:'6-stellige PIN',btnConnect:'Verbinden',
+setTitle:'Einstellungen',btnDone:'Fertig',gSens:'Empfindlichkeit',lRoom:'Pegel im Zimmer',lSendsAbove:'Sendet Ton oberhalb von',hintFromParent:'Wird am Eltern-Handy geändert.',gScreen:'Bildschirm',chkAwake:'Bildschirm eingeschaltet lassen',hintAwakeB:'Ist es aus, sperrt sich der Bildschirm selbst und spart Akku. Der Ton wird weiter gesendet.',hintAwakeP:'Ist es aus, sperrt sich der Bildschirm selbst und spart Akku.',gPair:'Kopplung',lBabySends:'Das Baby sendet Ton oberhalb von',hintSens:'Weiter links = empfindlicher. Vergleiche mit dem Pegel im Zimmer.',btnCal:'Kalibrieren (10 s Stille)',sumHist:'Verlauf',gConn:'Verbindung',chkCompat:'Kompatibilität: beim Verbinden Mikrofonzugriff anfragen',hintCompat:'Aktiviere es nur, wenn sich das Eltern-Handy nicht verbinden kann.',compatTip:'Falls es sich nicht verbindet, aktiviere Kompatibilität in den Einstellungen.',gThis:'Dieses Handy',btnRole:'Rolle dieses Handys ändern',hintWifi:'Beide Handys müssen im selben WLAN sein, mit Internet, um sich zu finden. Der Ton läuft direkt zwischen ihnen und verbraucht keine mobilen Daten.',version:'Version',
+sumTest:'Testprotokoll',testHelp:'Speichert auf diesem Handy, was passiert (Töne, Abbrüche, Wiederverbindungen, gesperrter Bildschirm), damit es später ausgewertet werden kann. Notiere den Akkustand, wann immer du möchtest.',phNote:'Notiz, z. B. Akku 80 %',noteA:'Notiz',btnNote:'Notieren',btnExp:'Exportieren',btnClr:'Löschen',
+mCreating:'PIN wird erstellt…',mPinShown:'Gib diese PIN am Eltern-Handy ein. Warte…',mPinExpired:'Die PIN ist abgelaufen. Tippe erneut auf PIN erstellen.',mPinFail:'Die PIN konnte nicht erstellt werden ({e}). Prüfe, ob das WLAN Internet hat.',mWaitParents:'Warte auf das Eltern-Handy…',mPrepFail:'Verbindung konnte nicht vorbereitet werden ({e}). Neuer Versuch…',mConnecting:'Verbinde…',mLostRe:'Verbindung verloren. Verbinde neu…',mLostPin:'Verbindung verloren. Tippe auf PIN erstellen, um neu zu koppeln.',mMicFail:'Das Mikrofon konnte nicht verwendet werden. Erlaube den Zugriff in den Safari-Einstellungen.',mNoWorklet:'Dieser Browser kann den Ton nicht verarbeiten (iOS 14.5 oder neuer nötig).',mPin6:'Die PIN hat 6 Ziffern.',mSeekBaby:'Suche das Baby-Handy…',mPinNotFound:'Diese PIN wurde nicht gefunden oder die Verbindung ist fehlgeschlagen. Prüfe, ob sie am Baby-Handy noch angezeigt wird und beide Handys Internet über WLAN haben.',mConnFail:'Verbindung fehlgeschlagen: {e}',mError:'Fehler: {e}',mCalRun:'Kalibriere… {n} s. Halte das Zimmer ruhig.',mCalDone:'Fertig: Empfindlichkeit auf {t} dB eingestellt.',mCalAsk:'Kalibrierung wird angefordert…',mCalFirst:'Verbinde dich zuerst mit dem Baby.',
+cForget:'Kopplung vergessen? Zum erneuten Verbinden brauchst du eine neue PIN.',cRole:'Rolle dieses Handys ändern? Die Verbindung wird getrennt.',cClear:'Testprotokoll dieses Handys löschen?',mForgotP:'Das Eltern-Handy hat die Kopplung vergessen.',mForgotB:'Das Baby-Handy hat die Kopplung vergessen.',mUnsup:'Dieser Browser erlaubt kein Mikrofon und keine direkte Verbindung. Öffne die Seite in Safari über den https-Link von GitHub Pages.',mSvcErr:'Kopplungsdienst: Fehler {n}',
+hSnd:'Ton für {d} s (Spitze {p} dB)',hLost:'Verbindung verloren',hBack:'Verbindung nach {d} s wiederhergestellt',hSum:'Letzte 12 Std.: {s} Töne und {l} Verbindungsabbrüche. Jeder Ton enthält 5 s Nachlauf.',hNone:'Noch nichts vorhanden.',
+lExp:'{n} Ereignisse exportiert.',lDl:'{n} Ereignisse heruntergeladen.',lCopy:'In die Zwischenablage kopiert ({n} Ereignisse).',lFail:'Export fehlgeschlagen.',lNoted:'Notiert. {n} Ereignisse gespeichert.',lCleared:'Protokoll gelöscht.',
+aPlay:'wird wiedergegeben',aPaused:'pausiert',aLine:'Audio: {kb} kB empfangen · {st}',titleLost:'⚠ Verbindung verloren'},
+fr:{pickT:'Quel téléphone est-ce ?',pickL:"À choisir une seule fois, c'est mémorisé.",pickBabyT:'Téléphone du bébé',pickBabyD:'Reste dans la chambre et envoie le son.',pickParT:'Téléphone des parents',pickParD:"Écoute le bébé de n'importe où dans la maison.",langL:'Langue',gearA:'Réglages',
+micAct:'Activer',micOff:'Éteindre',micPause:'Pause',micResume:'Reprendre',
+bOff:'Micro éteint',bOffS:'Touchez le cercle pour commencer',bWait:'En attente des parents',bWaitS:'Ils se connecteront tout seuls',bReady:"Prêt à s'appairer",bReadyS:'Créez un PIN et saisissez-le sur le téléphone des parents',bPause:'En pause',bPauseS:"Les parents n'entendent rien",bLive:'Son détecté',bLiveS:'Les parents écoutent',bIdle:'Tout est calme',bIdleS:"Rien n'est envoyé tant qu'il n'y a pas de bruit",bCal:'Étalonnage…',bCalS:'Mesure du silence de la pièce',
+pairBH:'Appairer avec le téléphone des parents',pairBP:"Touchez le bouton : un PIN à 6 chiffres s'affiche. Saisissez-le sur le téléphone des parents. Nécessaire seulement la première fois.",btnPin:'Créer un PIN',hintBaby:'Laissez ce téléphone près du berceau, de préférence en charge.',
+knownOn:'Appairé avec un téléphone de parents. Ils se connecteront tout seuls.',knownOff:'Appairé avec un téléphone de parents. Touchez le cercle et la connexion se fera toute seule.',
+lostB:'Connexion perdue. Tentative de reconnexion automatique…',btnForget:'Appairer avec un autre téléphone',
+pSearch:'Recherche du bébé…',pNone:'Bébé introuvable',pLost:'Pas de signal du bébé',pSound:'On entend le bébé',pQuiet:'Tout est calme',pLastAt:'Dernier son à {t}',pNothing:"Rien entendu pour l'instant",pPausedHint:'Activez le micro sur le téléphone du bébé puis touchez Chercher à nouveau',pWaitHint:'Sur le téléphone du bébé, touchez Activer',btnTap:'Touchez pour activer le son',btnAgain:'Chercher à nouveau',hintVol:"Le volume se règle avec les boutons de l'iPhone.",
+pairPH:'Appairer avec le téléphone du bébé',pairPP:'Sur le téléphone du bébé, touchez <b>Créer un PIN</b> et saisissez ici les 6 chiffres. Nécessaire seulement la première fois.',pinA:'PIN à 6 chiffres',btnConnect:'Connecter',
+setTitle:'Réglages',btnDone:'Terminé',gSens:'Sensibilité',lRoom:'Niveau de la pièce',lSendsAbove:'Envoie le son au-dessus de',hintFromParent:'Se modifie depuis le téléphone des parents.',gScreen:'Écran',chkAwake:"Garder l'écran allumé",hintAwakeB:"Désactivé, l'écran se verrouille tout seul et économise la batterie. Le son continue d'être envoyé.",hintAwakeP:"Désactivé, l'écran se verrouille tout seul et économise la batterie.",gPair:'Appairage',lBabySends:'Le bébé envoie le son au-dessus de',hintSens:'Plus à gauche = plus sensible. Comparez avec le niveau de la pièce.',btnCal:'Étalonner (10 s de silence)',sumHist:'Historique',gConn:'Connexion',chkCompat:"Compatibilité : demander l'accès au micro à la connexion",hintCompat:"Activez-le seulement si le téléphone des parents n'arrive pas à se connecter.",compatTip:'Si la connexion échoue, activez Compatibilité dans les Réglages.',gThis:'Ce téléphone',btnRole:'Changer le rôle de ce téléphone',hintWifi:"Les deux téléphones doivent être sur le même WiFi, avec internet pour se trouver. Le son passe directement de l'un à l'autre et n'utilise pas de données mobiles.",version:'Version',
+sumTest:'Journal de tests',testHelp:"Enregistre sur ce téléphone ce qui se passe (sons, coupures, reconnexions, écran verrouillé) pour l'analyser ensuite. Notez le % de batterie quand vous voulez.",phNote:'Note, p. ex. batterie 80 %',noteA:'Note',btnNote:'Noter',btnExp:'Exporter',btnClr:'Effacer',
+mCreating:'Création du PIN…',mPinShown:'Saisissez ce PIN sur le téléphone des parents. En attente…',mPinExpired:'Le PIN a expiré. Touchez Créer un PIN à nouveau.',mPinFail:'Impossible de créer le PIN ({e}). Vérifiez que le WiFi a internet.',mWaitParents:'En attente du téléphone des parents…',mPrepFail:'Impossible de préparer la connexion ({e}). Nouvelle tentative…',mConnecting:'Connexion…',mLostRe:'Connexion perdue. Reconnexion…',mLostPin:'Connexion perdue. Touchez Créer un PIN pour appairer à nouveau.',mMicFail:"Impossible d'utiliser le micro. Autorisez l'accès dans les réglages de Safari.",mNoWorklet:'Ce navigateur ne peut pas traiter le son (iOS 14.5 ou plus récent requis).',mPin6:'Le PIN comporte 6 chiffres.',mSeekBaby:'Recherche du téléphone du bébé…',mPinNotFound:"PIN introuvable ou connexion impossible. Vérifiez qu'il est toujours affiché sur le téléphone du bébé et que les deux ont internet par WiFi.",mConnFail:'Connexion impossible : {e}',mError:'Erreur : {e}',mCalRun:'Étalonnage… {n} s. Gardez la pièce silencieuse.',mCalDone:'Terminé : sensibilité réglée sur {t} dB.',mCalAsk:"Demande d'étalonnage…",mCalFirst:"Connectez-vous d'abord au bébé.",
+cForget:"Oublier l'appairage ? Il faudra un nouveau PIN pour se reconnecter.",cRole:'Changer le rôle de ce téléphone ? Il sera déconnecté.',cClear:'Effacer le journal de tests de ce téléphone ?',mForgotP:"Le téléphone des parents a oublié l'appairage.",mForgotB:"Le téléphone du bébé a oublié l'appairage.",mUnsup:"Ce navigateur n'autorise ni le micro ni la connexion directe. Ouvrez la page dans Safari via le lien https de GitHub Pages.",mSvcErr:"Service d'appairage : erreur {n}",
+hSnd:'Son de {d} s (pic {p} dB)',hLost:'Connexion perdue',hBack:'Connexion rétablie après {d} s',hSum:'12 dernières h : {s} sons et {l} coupures de connexion. Chaque son inclut 5 s de marge.',hNone:"Rien pour l'instant.",
+lExp:'{n} événements exportés.',lDl:'{n} événements téléchargés.',lCopy:'Copié dans le presse-papiers ({n} événements).',lFail:'Export impossible.',lNoted:'Noté. {n} événements enregistrés.',lCleared:'Journal effacé.',
+aPlay:'lecture en cours',aPaused:'en pause',aLine:'Audio : {kb} ko reçus · {st}',titleLost:'⚠ Connexion perdue'},
+it:{pickT:'Che telefono è questo?',pickL:'Si sceglie una volta e viene ricordato.',pickBabyT:'Telefono del bebè',pickBabyD:'Resta nella stanza e invia il suono.',pickParT:'Telefono dei genitori',pickParD:'Ascolta il bebè da qualsiasi punto della casa.',langL:'Lingua',gearA:'Impostazioni',
+micAct:'Attiva',micOff:'Spegni',micPause:'Pausa',micResume:'Riprendi',
+bOff:'Microfono spento',bOffS:'Tocca il cerchio per iniziare',bWait:'In attesa dei genitori',bWaitS:'Si collegheranno da soli',bReady:"Pronto per l'abbinamento",bReadyS:'Crea un PIN e inseriscilo sul telefono dei genitori',bPause:'In pausa',bPauseS:'I genitori non sentono nulla',bLive:'Suono rilevato',bLiveS:'I genitori stanno ascoltando',bIdle:'Tutto silenzioso',bIdleS:'Non viene inviato nulla finché non c’è rumore',bCal:'Calibrazione…',bCalS:'Misuro il silenzio della stanza',
+pairBH:'Abbina al telefono dei genitori',pairBP:'Tocca il pulsante: apparirà un PIN di 6 cifre. Inseriscilo sul telefono dei genitori. Serve solo la prima volta.',btnPin:'Crea PIN',hintBaby:'Lascia questo telefono vicino alla culla, meglio se in carica.',
+knownOn:'Abbinato a un telefono dei genitori. Si collegheranno da soli.',knownOff:'Abbinato a un telefono dei genitori. Tocca il cerchio e si collegherà da solo.',
+lostB:'Connessione persa. Provo a riconnettermi da solo…',btnForget:'Abbina a un altro telefono',
+pSearch:'Cerco il bebè…',pNone:'Non trovo il bebè',pLost:'Nessun segnale dal bebè',pSound:'Si sente il bebè',pQuiet:'Tutto tranquillo',pLastAt:'Ultimo suono alle {t}',pNothing:'Ancora nulla di sentito',pPausedHint:'Attiva il microfono sul telefono del bebè e tocca Cerca di nuovo',pWaitHint:'Sul telefono del bebè, tocca Attiva',btnTap:"Tocca per attivare l'audio",btnAgain:'Cerca di nuovo',hintVol:"Il volume si regola con i tasti dell'iPhone.",
+pairPH:'Abbina al telefono del bebè',pairPP:'Sul telefono del bebè tocca <b>Crea PIN</b> e inserisci qui le 6 cifre. Serve solo la prima volta.',pinA:'PIN di 6 cifre',btnConnect:'Collega',
+setTitle:'Impostazioni',btnDone:'Fatto',gSens:'Sensibilità',lRoom:'Livello della stanza',lSendsAbove:'Invia il suono sopra',hintFromParent:'Si cambia dal telefono dei genitori.',gScreen:'Schermo',chkAwake:'Mantieni lo schermo acceso',hintAwakeB:'Se disattivato, lo schermo si blocca da solo e risparmia batteria. Il suono continua a essere inviato.',hintAwakeP:'Se disattivato, lo schermo si blocca da solo e risparmia batteria.',gPair:'Abbinamento',lBabySends:'Il bebè invia il suono sopra',hintSens:'Più a sinistra = più sensibile. Confronta con il livello della stanza.',btnCal:'Calibra (10 s di silenzio)',sumHist:'Cronologia',gConn:'Connessione',chkCompat:'Compatibilità: chiedi il permesso del microfono al collegamento',hintCompat:'Attivalo solo se il telefono dei genitori non riesce a collegarsi.',compatTip:'Se non si collega, prova ad attivare Compatibilità nelle Impostazioni.',gThis:'Questo telefono',btnRole:'Cambia il ruolo di questo telefono',hintWifi:"I due telefoni devono essere sulla stessa WiFi, con internet per trovarsi. L'audio passa direttamente tra loro e non usa dati mobili.",version:'Versione',
+sumTest:'Registro di prova',testHelp:'Salva su questo telefono ciò che accade (suoni, cadute, riconnessioni, schermo bloccato) per analizzarlo dopo. Annota la percentuale di batteria quando vuoi.',phNote:'Nota, es. batteria 80 %',noteA:'Nota',btnNote:'Annota',btnExp:'Esporta',btnClr:'Cancella',
+mCreating:'Creo il PIN…',mPinShown:'Inserisci questo PIN sul telefono dei genitori. In attesa…',mPinExpired:'Il PIN è scaduto. Tocca di nuovo Crea PIN.',mPinFail:'Impossibile creare il PIN ({e}). Controlla che la WiFi abbia internet.',mWaitParents:'In attesa del telefono dei genitori…',mPrepFail:'Impossibile preparare la connessione ({e}). Riprovo…',mConnecting:'Connessione…',mLostRe:'Connessione persa. Riconnessione…',mLostPin:'Connessione persa. Tocca Crea PIN per abbinare di nuovo.',mMicFail:'Impossibile usare il microfono. Consenti l’accesso nelle impostazioni di Safari.',mNoWorklet:'Questo browser non può elaborare l’audio (serve iOS 14.5 o successivo).',mPin6:'Il PIN ha 6 cifre.',mSeekBaby:'Cerco il telefono del bebè…',mPinNotFound:'Non trovo quel PIN o non è stato possibile collegarsi. Controlla che sia ancora sullo schermo del telefono del bebè e che entrambi abbiano internet via WiFi.',mConnFail:'Impossibile collegarsi: {e}',mError:'Errore: {e}',mCalRun:'Calibrazione… {n} s. Mantieni la stanza silenziosa.',mCalDone:'Fatto: sensibilità impostata a {t} dB.',mCalAsk:'Richiesta di calibrazione…',mCalFirst:'Prima collegati al bebè.',
+cForget:"Dimenticare l'abbinamento? Servirà un nuovo PIN per ricollegarsi.",cRole:'Cambiare il ruolo di questo telefono? Verrà disconnesso.',cClear:'Cancellare il registro di prova di questo telefono?',mForgotP:"Il telefono dei genitori ha dimenticato l'abbinamento.",mForgotB:"Il telefono del bebè ha dimenticato l'abbinamento.",mUnsup:'Questo browser non consente microfono o connessione diretta. Apri la pagina in Safari dal link https di GitHub Pages.',mSvcErr:'Servizio di abbinamento: errore {n}',
+hSnd:'Suono di {d} s (picco {p} dB)',hLost:'Connessione persa',hBack:'Connessione ripristinata dopo {d} s',hSum:'Ultime 12 h: {s} suoni e {l} cadute di connessione. Ogni suono include 5 s di margine.',hNone:'Ancora niente.',
+lExp:'{n} eventi esportati.',lDl:'{n} eventi scaricati.',lCopy:'Copiato negli appunti ({n} eventi).',lFail:'Impossibile esportare.',lNoted:'Annotato. {n} eventi salvati.',lCleared:'Registro cancellato.',
+aPlay:'in riproduzione',aPaused:'in pausa',aLine:'Audio: {kb} kB ricevuti · {st}',titleLost:'⚠ Connessione persa'}
+};
+
+var LANGS={es:'Español',en:'English',de:'Deutsch',fr:'Français',it:'Italiano'};
+var LOCALE={es:'es-ES',en:'en-GB',de:'de-DE',fr:'fr-FR',it:'it-IT'};
+function t(k,p){
+  var s=(I18N[S.lang]&&I18N[S.lang][k])||I18N.es[k]||k;
+  if(p)for(var x in p)s=s.split('{'+x+'}').join(p[x]);
+  return s;
+}
+function applyLang(){
+  document.documentElement.lang=S.lang;
+  var q=function(a,f){Array.prototype.forEach.call(document.querySelectorAll('['+a+']'),function(e){f(e,t(e.getAttribute(a)));});};
+  q('data-i',function(e,v){e.textContent=v;});
+  q('data-ih',function(e,v){e.innerHTML=v;});
+  q('data-ia',function(e,v){e.setAttribute('aria-label',v);});
+  q('data-ip',function(e,v){e.setAttribute('placeholder',v);});
+  $('verTxt').textContent=t('version')+' '+VERSION;
+  $('lang').value=S.lang;$('langP').value=S.lang;
+  if(S.mode==='parent'&&$('pHistBox').open)renderHist();
+}
+function setLang(l){
+  if(!I18N[l])l='es';
+  S.lang=l;try{localStorage.setItem('vb-lang',l);}catch(e){}
+  applyLang();
+}
 var TEST_LOG=true; /* registro de pruebas: pon false para quitarlo en versiones finales */
 var KIND=window.VB_SIGNAL_KIND||(/ntfy\.sh/.test(SIGNAL)?'sse':'poll');
 var SILENT='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
 var S={pc:null,dc:null,mic:null,sendTrack:null,ctx:null,an:null,buf:null,lvl:-90,lastLoud:0,paused:false,
   connected:false,thr:-60,hold:5000,lastSend:0,wake:null,remote:null,audio:null,
   rlvl:-90,lastMsg:0,lostOn:false,lastSoundAt:null,beepT:null,mode:'baby',es:null,esTimer:null,bytes:0,statT:0,thrTouch:0,lastActive:false,awake:false,node:null,dest:null,gateReady:false,active:false,calEnd:0,calVals:[],calRun:false,searchT:0,searchPaused:false,connectedOnce:false,
-  role:null,retryT:0,secretPending:null,lastNonce:null,autoListen:false,joining:false,ipsOk:false,poll:null,
+  role:null,retryT:0,secretPending:null,lastNonce:null,autoListen:false,joining:false,ipsOk:false,ips:false,tipOn:false,tipT:0,lang:'es',poll:null,
   snd:{baby:{on:0,peak:-90},parent:{on:0,peak:-90}},dropAt:0,lostAt:0,agg:{n:0,sum:0,max:-90,act:0,t:0,b0:0},lastW:0,histT:0,ra:0};
 window.__vb=S;
 
@@ -331,7 +439,7 @@ function aggTick(role,db,act,dt,bytes){
     S.agg={n:0,sum:0,max:-90,act:0,t:now,b0:bytes||0};
   }
 }
-function clock(ms){return new Date(ms).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});}
+function clock(ms){return new Date(ms).toLocaleTimeString(LOCALE[S.lang]||'es-ES',{hour:'2-digit',minute:'2-digit'});}
 function renderHist(){
   S.histT=Date.now();
   var L=lsGet('vb-hist'),since=Date.now()-12*3600*1000,ns=0,nl=0,rows=[];
@@ -339,13 +447,13 @@ function renderHist(){
     var e=L[i];
     if(e.t>=since){if(e.k==='snd')ns++;if(e.k==='lost')nl++;}
     if(rows.length<15){
-      if(e.k==='snd')rows.push('<div><span>'+clock(e.t-e.dur*1000)+'</span>Sonido de '+e.dur+' s (pico '+e.peak+' dB)</div>');
-      else if(e.k==='lost')rows.push('<div><span>'+clock(e.t)+'</span>Se perdió la conexión</div>');
-      else if(e.k==='back')rows.push('<div><span>'+clock(e.t)+'</span>Conexión recuperada tras '+e.dur+' s</div>');
+      if(e.k==='snd')rows.push('<div><span>'+clock(e.t-e.dur*1000)+'</span>'+t('hSnd',{d:e.dur,p:e.peak})+'</div>');
+      else if(e.k==='lost')rows.push('<div><span>'+clock(e.t)+'</span>'+t('hLost')+'</div>');
+      else if(e.k==='back')rows.push('<div><span>'+clock(e.t)+'</span>'+t('hBack',{d:e.dur})+'</div>');
     }
   }
-  $('pHistSum').textContent='Últimas 12 h: '+ns+' sonidos y '+nl+' cortes de conexión. Cada sonido incluye 5 s de margen.';
-  $('pHist').innerHTML=rows.join('')||'<div>Aún no hay nada.</div>';
+  $('pHistSum').textContent=t('hSum',{s:ns,l:nl});
+  $('pHist').innerHTML=rows.join('')||'<div>'+t('hNone')+'</div>';
 }
 function fmtEv(e){
   return Object.keys(e).filter(function(k){return k!=='t'&&k!=='k';}).map(function(k){return k+'='+e[k];}).join(' ');
@@ -362,26 +470,26 @@ async function exportLog(x){
   var text=lines.join('\n'),name='vigilabebes-'+role+'-'+stamp+'.csv';
   try{
     var f=new File([text],name,{type:'text/csv'});
-    if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});setMsg(m,L.length+' eventos exportados.');return;}
+    if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});setMsg(m,t('lExp',{n:L.length}));return;}
   }catch(e){if(e&&e.name==='AbortError')return;}
   try{
     var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/csv'}));a.download=name;
-    document.body.appendChild(a);a.click();a.remove();setMsg(m,L.length+' eventos descargados.');return;
+    document.body.appendChild(a);a.click();a.remove();setMsg(m,t('lDl',{n:L.length}));return;
   }catch(e){}
-  try{await navigator.clipboard.writeText(text);setMsg(m,'Copiado al portapapeles ('+L.length+' eventos).');}
-  catch(e){setMsg(m,'No se pudo exportar.',true);}
+  try{await navigator.clipboard.writeText(text);setMsg(m,t('lCopy',{n:L.length}));}
+  catch(e){setMsg(m,t('lFail'),true);}
 }
 function wireLog(x){
   var role=x==='b'?'baby':'parent',m=x+'LogMsg';
   var count=function(){return lsGet('vb-log-'+role).length;};
   $(x+'NoteBtn').addEventListener('click',function(){
     var v=$(x+'Note').value.trim();if(!v)return;
-    tlog(role,{k:'nota',d:v});$(x+'Note').value='';setMsg(m,'Anotado. '+count()+' eventos guardados.');
+    tlog(role,{k:'nota',d:v});$(x+'Note').value='';setMsg(m,t('lNoted',{n:count()}));
   });
   $(x+'Export').addEventListener('click',function(){exportLog(x);});
   $(x+'Clear').addEventListener('click',function(){
-    if(!confirm('¿Borrar el registro de pruebas de este móvil?'))return;
-    try{localStorage.removeItem('vb-log-'+role);}catch(e){}setMsg(m,'Registro borrado.');
+    if(!confirm(t('cClear')))return;
+    try{localStorage.removeItem('vb-log-'+role);}catch(e){}setMsg(m,t('lCleared'));
   });
 }
 window.addEventListener('pagehide',function(){tlog(S.mode==='baby'?'baby':'parent',{k:'pagina',d:'cerrada'});});
@@ -445,7 +553,7 @@ function onLinked(){
   tlog(S.role,S.dropAt?{k:'link',d:'reconectado',tras:Math.round((Date.now()-S.dropAt)/1000)+' s'}:{k:'link',d:'conectado'});S.dropAt=0;
   S.connectedOnce=true;S.searchT=0;S.searchPaused=false;
   sigStop();clearTimeout(S.retryT);S.connected=true;S.lastMsg=Date.now();S.autoListen=false;
-  setLost(false);keepAwake();setMsg('bMsg','');setMsg('pMsg','');
+  setLost(false);keepAwake();setMsg('bMsg','');setMsg('pMsg','');S.tipOn=false;clearTimeout(S.tipT);
   if(S.role==='baby')maybeSendSecret();
   render();
 }
@@ -453,8 +561,8 @@ function onDropped(){
   if(!S.connected)return;
   S.connected=false;S.dropAt=Date.now();tlog(S.role,{k:'drop',d:'conexión perdida'});
   if(S.role==='parent'){setLost(true);}
-  else if(getPair('baby')&&S.mic){setMsg('bMsg','Se perdió la conexión. Reconectando…',true);setTimeout(babyAuto,1500);}
-  else{setMsg('bMsg','Se perdió la conexión. Pulsa Crear PIN para emparejar de nuevo.',true);}
+  else if(getPair('baby')&&S.mic){setMsg('bMsg',t('mLostRe'),true);setTimeout(babyAuto,1500);}
+  else{setMsg('bMsg',t('mLostPin'),true);}
   render();
 }
 function resetLink(){
@@ -473,7 +581,7 @@ function forgetLocal(role,msg){
 }
 function forget(){
   var role=S.mode;
-  if(getPair(role)&&!confirm('¿Olvidar el emparejamiento? Para volver a conectar necesitarás un PIN nuevo.'))return;
+  if(getPair(role)&&!confirm(t('cForget')))return;
   if(S.dc&&S.dc.readyState==='open'&&S.connected){try{S.dc.send(JSON.stringify({fg:1}));}catch(e){}}
   setPair(role,null);clearTimeout(S.retryT);
   setTimeout(resetLink,250);
@@ -492,7 +600,7 @@ function onCtl(ev){ /* mensajes del canal de datos, en los dos móviles */
     if(typeof o.thr==='number'&&o.thr>=-85&&o.thr<=-15){setThr(o.thr);tlog('baby',{k:'umbral',d:o.thr+' dB',origen:'padres'});}
     if(o.cal)startCal();
     if(o.kok&&S.secretPending){setPair('baby',{secret:S.secretPending});S.secretPending=null;render();}
-    if(o.fg)forgetLocal('baby','El móvil de padres olvidó el emparejamiento.');
+    if(o.fg)forgetLocal('baby',t('mForgotP'));
   }else{
     if(typeof o.d==='number'){
       S.rlvl=o.d;S.lastMsg=Date.now();S.ra=o.a?1:0;
@@ -500,13 +608,13 @@ function onCtl(ev){ /* mensajes del canal de datos, en los dos móviles */
       if(typeof o.t==='number'&&Date.now()-S.thrTouch>2500){$('pThr').value=o.t;$('pThrVal').textContent=o.t;}
       if(o.a)S.lastSoundAt=new Date();
       if(typeof o.c==='number'){
-        if(o.c>0){S.calRun=true;setMsg('pCalMsg','Calibrando… '+o.c+' s. Mantén el cuarto en silencio.');}
-        else if(S.calRun){S.calRun=false;setMsg('pCalMsg','Listo: sensibilidad ajustada a '+o.t+' dB.');}
+        if(o.c>0){S.calRun=true;setMsg('pCalMsg',t('mCalRun',{n:o.c}));}
+        else if(S.calRun){S.calRun=false;setMsg('pCalMsg',t('mCalDone',{t:o.t}));}
       }
       if(S.lostOn)setLost(false);
     }
     if(o.k){setPair('parent',{secret:o.k});try{S.dc.send(JSON.stringify({kok:1}));}catch(e){}render();}
-    if(o.fg)forgetLocal('parent','El móvil del bebé olvidó el emparejamiento.');
+    if(o.fg)forgetLocal('parent',t('mForgotB'));
   }
 }
 function wireDC(dc){
@@ -545,7 +653,7 @@ var GATE_JS=[
 async function startMic(){
   try{
     S.mic=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
-  }catch(e){setMsg('bMsg','No se pudo usar el micrófono. Permite el acceso en Ajustes de Safari.',true);return;}
+  }catch(e){setMsg('bMsg',t('mMicFail'),true);return;}
   var AC=window.AudioContext||window.webkitAudioContext;
   S.ctx=S.ctx||new AC();S.ctx.resume().catch(function(){});
   try{
@@ -563,7 +671,7 @@ async function startMic(){
     S.node.port.postMessage({thr:S.thr,paused:S.paused,hold:S.hold/1000});
   }catch(e){
     S.mic.getTracks().forEach(function(t){t.stop();});S.mic=null;
-    setMsg('bMsg','Este navegador no puede procesar el audio (hace falta iOS 14.5 o superior).',true);return;
+    setMsg('bMsg',t('mNoWorklet'),true);return;
   }
   keepAwake();render();
   tlog('baby',{k:'mic',d:'activado'});
@@ -611,8 +719,11 @@ async function babyOffer(topic){
     if(m.indexOf(pre)!==0||S.connected||pc!==S.pc||pc.remoteDescription)return;
     unpack(m.slice(pre.length)).then(function(d){
       if(pc!==S.pc||pc.remoteDescription)return;
-      setMsg('bMsg','Conectando…');
-      return pc.setRemoteDescription(d);
+      setMsg('bMsg',t('mConnecting'));
+      return pc.setRemoteDescription(d).then(function(){
+        clearTimeout(pc._rt);
+        pc._rt=setTimeout(function(){if(pc===S.pc&&!S.connected){tlog('baby',{k:'link',d:'sin conexión tras 20 s: nueva oferta'});babyOffer(topic).catch(function(){});}},20000);
+      });
     }).catch(function(){});
   });
   await sigPost(topic,'o.'+nonce+'.'+await pack(pc.localDescription));
@@ -620,19 +731,19 @@ async function babyOffer(topic){
 }
 async function createPin(){
   if(!S.mic){await startMic();if(!S.mic)return;}
-  $('bCreate').disabled=true;setMsg('bMsg','Creando PIN…');
+  $('bCreate').disabled=true;setMsg('bMsg',t('mCreating'));
   try{
     var pin=String(100000+crypto.getRandomValues(new Uint32Array(1))[0]%900000);
     var pc=await babyOffer(await topicFor(pin));
     if(!pc)return;
     $('bPin').textContent=pin;show('bPin',true);
-    setMsg('bMsg','Escribe este PIN en el móvil de padres. Esperando…');
+    setMsg('bMsg',t('mPinShown'));
     S.esTimer=setTimeout(function(){
-      if(!S.connected){sigStop();$('bCreate').disabled=false;show('bPin',false);setMsg('bMsg','El PIN caducó. Pulsa Crear PIN otra vez.',true);}
+      if(!S.connected){sigStop();$('bCreate').disabled=false;show('bPin',false);setMsg('bMsg',t('mPinExpired'),true);}
     },300000);
   }catch(e){
     sigStop();$('bCreate').disabled=false;
-    setMsg('bMsg','No se pudo crear el PIN ('+e.message+'). Comprueba que hay internet por WiFi.',true);
+    setMsg('bMsg',t('mPinFail',{e:e.message}),true);
   }
 }
 async function babyAuto(){ /* reconexión sin PIN con el secreto guardado */
@@ -641,9 +752,9 @@ async function babyAuto(){ /* reconexión sin PIN con el secreto guardado */
   if(!pr||!S.mic||S.connected)return;
   var again=300000;
   try{
-    setMsg('bMsg','Esperando al móvil de padres…');
+    setMsg('bMsg',t('mWaitParents'));
     await babyOffer(await topicFor(pr.secret));
-  }catch(e){setMsg('bMsg','No se pudo preparar la conexión ('+e.message+'). Reintentando…',true);again=15000;}
+  }catch(e){setMsg('bMsg',t('mPrepFail',{e:e.message}),true);again=15000;}
   S.retryT=setTimeout(babyAuto,again);
 }
 function babyTick(){
@@ -651,12 +762,12 @@ function babyTick(){
   if(S.calEnd&&Date.now()>=S.calEnd+500)finishCal();
   sendStatus();
   var active=S.active&&!S.paused,st,sub,hs;
-  if(!S.mic){st='Micrófono apagado';sub='Pulsa el círculo para empezar';hs='off';}
-  else if(!S.connected){st=getPair('baby')?'Esperando a los padres':'Listo para emparejar';sub=getPair('baby')?'Se conectarán solos':'Crea un PIN y escríbelo en el móvil de padres';hs='wait';}
-  else if(S.paused){st='En pausa';sub='Los padres no te oyen';hs='paused';}
-  else if(active){st='Se oye algo';sub='Los padres te están oyendo';hs='live';}
-  else{st='Todo en silencio';sub='No se envía nada hasta que haya ruido';hs='idle';}
-  if(S.calEnd){st='Calibrando…';sub='Midiendo el silencio del cuarto';hs='wait';}
+  if(!S.mic){st=t('bOff');sub=t('bOffS');hs='off';}
+  else if(!S.connected){st=getPair('baby')?t('bWait'):t('bReady');sub=getPair('baby')?t('bWaitS'):t('bReadyS');hs='wait';}
+  else if(S.paused){st=t('bPause');sub=t('bPauseS');hs='paused';}
+  else if(active){st=t('bLive');sub=t('bLiveS');hs='live';}
+  else{st=t('bIdle');sub=t('bIdleS');hs='idle';}
+  if(S.calEnd){st=t('bCal');sub=t('bCalS');hs='wait';}
   $('bStatus').textContent=st;$('bSend').textContent=sub;
   hero('bHero',hs,S.mic?S.lvl:-90);
   $('bDb').textContent=Math.round(S.lvl)+' dB';
@@ -694,16 +805,16 @@ function parentListen(topic){
 }
 async function join(){
   var pin=$('pPin').value.replace(/\D/g,'');
-  if(pin.length!==6){setMsg('pMsg','El PIN tiene 6 cifras.',true);return;}
+  if(pin.length!==6){setMsg('pMsg',t('mPin6'),true);return;}
   touch();
-  $('pJoin').disabled=true;setMsg('pMsg','Buscando el móvil del bebé…');
+  $('pJoin').disabled=true;setMsg('pMsg',t('mSeekBaby'));
   try{
     parentListen(await topicFor(pin));
     S.esTimer=setTimeout(function(){
       if(!S.connected){sigStop();$('pJoin').disabled=false;
-        setMsg('pMsg','No encuentro ese PIN o no se pudo conectar. Revisa que sigue en pantalla en el móvil del bebé y que los dos tenéis internet por WiFi.',true);}
+        setMsg('pMsg',t('mPinNotFound'),true);}
     },45000);
-  }catch(e){$('pJoin').disabled=false;setMsg('pMsg','Error: '+e.message,true);}
+  }catch(e){$('pJoin').disabled=false;setMsg('pMsg',t('mError',{e:e.message}),true);}
 }
 async function startParentListen(pr){
   S.joining=true;S.autoListen=true;
@@ -726,7 +837,7 @@ async function answer(topic,m){
   try{
     var rest=m.slice(2),k=rest.indexOf('.'),nonce=rest.slice(0,k);
     var offer=await unpack(rest.slice(k+1));
-    await unlockIPs();
+    if(S.ips)await unlockIPs();
     var pc=newPC('parent');
     pc.ontrack=function(e){S.remote=(e.streams&&e.streams[0])||new MediaStream([e.track]);attachAudio();};
     pc.ondatachannel=function(e){S.dc=e.channel;wireDC(S.dc);};
@@ -735,8 +846,11 @@ async function answer(topic,m){
     await pc.setLocalDescription(await pc.createAnswer());
     await gathered(pc);
     await sigPost(topic,'a.'+nonce+'.'+await pack(pc.localDescription));
-    setMsg('pMsg','Conectando…');
-  }catch(e){setMsg('pMsg','No se pudo conectar: '+e.message,true);$('pJoin').disabled=false;}
+    setMsg('pMsg',t('mConnecting'));
+    clearTimeout(S.tipT);S.tipT=setTimeout(function(){ /* si no conecta sin permiso de micrófono, se activa la compatibilidad solo; el bebé vuelve a ofrecer y se reintenta */
+      if(!S.connected&&!S.ips){S.ips=true;try{localStorage.setItem('vb-ips','1');}catch(e){}$('pIps').checked=true;tlog('parent',{k:'ajuste',d:'compatibilidad micro on (automática)'});}
+    },15000);
+  }catch(e){setMsg('pMsg',t('mConnFail',{e:e.message}),true);$('pJoin').disabled=false;}
 }
 function attachAudio(){
   if(!S.audio){S.audio=new Audio();S.audio.setAttribute('playsinline','');S.audio.autoplay=true;}
@@ -755,7 +869,7 @@ function setLost(v){
   if(v&&!was){S.lostAt=Date.now();hist({k:'lost'});tlog('parent',{k:'alarma',d:'on'});}
   if(!v&&was){hist({k:'back',dur:Math.round((Date.now()-S.lostAt)/1000)});tlog('parent',{k:'alarma',d:'off'});}
   S.lostOn=v;show('lost',v);
-  document.title=v?'⚠ Conexión perdida':'Vigilabebés Local';
+  document.title=v?t('titleLost'):'Vigilabebés';
   clearInterval(S.beepT);
   if(v){beep();S.beepT=setInterval(beep,2000);}
   if(S.mode==='parent')renderParent();
@@ -766,22 +880,23 @@ function parentTick(){
   if(S.mode==='parent'&&$('pHistBox').open&&Date.now()-S.histT>5000)renderHist();
   if(S.connected&&S.mode==='parent'&&Date.now()-S.lastMsg>6000&&!S.lostOn)setLost(true);
   var live=S.connected&&!S.lostOn,fresh=live&&Date.now()-S.lastMsg<1500,snd=fresh&&S.ra,hs,st;
-  if(S.lostOn){hs='lost';st='Sin señal del bebé';}
-  else if(S.connected){hs=snd?'live':'idle';st=snd?'Se oye al bebé':'Todo tranquilo';}
-  else{hs='search';st=S.searchPaused?'No encuentro al bebé':'Buscando al bebé…';}
+  if(S.lostOn){hs='lost';st=t('pLost');}
+  else if(S.connected){hs=snd?'live':'idle';st=snd?t('pSound'):t('pQuiet');}
+  else{hs='search';st=S.searchPaused?t('pNone'):t('pSearch');}
   $('pStatus').textContent=st;
   hero('pHero',hs,fresh?S.rlvl:-90);
   show('pSearchRow',S.searchPaused&&!S.connected&&!S.lostOn);
   $('pDb').textContent=Math.round(live?S.rlvl:-90)+' dB';
-  $('pLast').textContent=S.lastSoundAt?'Último sonido a las '+clock(S.lastSoundAt.getTime()):
-    (live?'Aún no se ha oído nada':(S.searchPaused?'Activa el micrófono en el móvil del bebé y pulsa Buscar de nuevo':'En el móvil del bebé, pulsa Activar'));
+  $('pLast').textContent=S.lastSoundAt?t('pLastAt',{t:clock(S.lastSoundAt.getTime())}):
+    (live?t('pNothing'):(S.searchPaused?t('pPausedHint'):t('pWaitHint')));
+  show('pTip',S.tipOn&&!S.connected);
   if(S.mode==='parent'&&S.connected){show('pTap',!!((S.ctx&&S.ctx.state!=='running')||(S.audio&&S.remote&&S.audio.paused)));}
   if(S.pc&&S.connected&&S.mode==='parent'&&Date.now()-S.statT>1000){
     S.statT=Date.now();
     S.pc.getStats().then(function(st2){
       st2.forEach(function(r){if(r.type==='inbound-rtp'&&r.kind==='audio'){S.bytes=r.bytesReceived;}});
       var playing=S.audio&&!S.audio.paused;
-      $('pAud').textContent='Audio: '+Math.round(S.bytes/1024)+' kB recibidos · '+(playing?'reproduciendo':'en pausa');
+      $('pAud').textContent=t('aLine',{kb:Math.round(S.bytes/1024),st:playing?t('aPlay'):t('aPaused')});
     }).catch(function(){});
   }
 }
@@ -794,11 +909,11 @@ function renderParent(){
 function render(){
   var bp=!!getPair('baby');
   show('bPair',!S.connected);show('bNew',!bp);show('bKnown',bp);
-  $('bKnownTxt').textContent=S.mic?'Emparejado con un móvil de padres. Se conectarán solos.':'Emparejado con un móvil de padres. Pulsa el círculo y se conectará solo.';
+  $('bKnownTxt').textContent=S.mic?t('knownOn'):t('knownOff');
   var mb=$('micBtn'),tx=$('micTxt');
-  if(!S.mic){tx.textContent='Activar';mb.setAttribute('aria-pressed','false');}
-  else if(!S.connected){tx.textContent='Apagar';mb.setAttribute('aria-pressed','true');}
-  else{tx.textContent=S.paused?'Reanudar':'Pausar';mb.setAttribute('aria-pressed',S.paused?'false':'true');}
+  if(!S.mic){tx.textContent=t('micAct');mb.setAttribute('aria-pressed','false');}
+  else if(!S.connected){tx.textContent=t('micOff');mb.setAttribute('aria-pressed','true');}
+  else{tx.textContent=S.paused?t('micResume'):t('micPause');mb.setAttribute('aria-pressed',S.paused?'false':'true');}
   renderParent();
 }
 function setMode(m){
@@ -809,8 +924,20 @@ function setMode(m){
   render();
 }
 function init(){
+  try{var lg=localStorage.getItem('vb-lang');if(lg&&I18N[lg])S.lang=lg;}catch(e){}
+  ['lang','langP'].forEach(function(id){
+    var sel=$(id);Object.keys(LANGS).forEach(function(k){var o=document.createElement('option');o.value=k;o.textContent=LANGS[k];sel.appendChild(o);});
+    sel.addEventListener('change',function(){setLang(this.value);});
+  });
+  try{S.ips=localStorage.getItem('vb-ips')==='1';}catch(e){}
+  $('pIps').checked=S.ips;
+  $('pIps').addEventListener('change',function(){
+    S.ips=this.checked;try{localStorage.setItem('vb-ips',S.ips?'1':'0');}catch(e){}
+    tlog('parent',{k:'ajuste',d:'compatibilidad micro '+(S.ips?'on':'off')});S.tipOn=false;
+  });
+  applyLang();
   if(!window.RTCPeerConnection||!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.crypto||!crypto.subtle){
-    $('support').textContent='Este navegador no permite micrófono o conexión directa. Abre la página con Safari desde el enlace https de GitHub Pages.';
+    $('support').textContent=t('mUnsup');
   }
   try{var t=parseInt(localStorage.getItem('vb-thr'),10);if(t>=-85&&t<=-15)S.thr=t;}catch(e){}
   setThr(S.thr);
@@ -827,8 +954,8 @@ function init(){
   $('bCreate').addEventListener('click',createPin);
   $('pJoin').addEventListener('click',join);
   $('pCal').addEventListener('click',function(){
-    if(S.dc&&S.dc.readyState==='open'){S.thrTouch=0;setMsg('pCalMsg','Pidiendo calibración…');try{S.dc.send(JSON.stringify({cal:1}));}catch(e){}}
-    else{setMsg('pCalMsg','Primero hay que conectar con el bebé.',true);}
+    if(S.dc&&S.dc.readyState==='open'){S.thrTouch=0;setMsg('pCalMsg',t('mCalAsk'));try{S.dc.send(JSON.stringify({cal:1}));}catch(e){}}
+    else{setMsg('pCalMsg',t('mCalFirst'),true);}
   });
   $('pPin').addEventListener('keydown',function(e){if(e.key==='Enter')join();});
   $('pTapBtn').addEventListener('click',function(){
@@ -848,15 +975,14 @@ function init(){
   document.addEventListener('pointerdown',touch);
   wireLog('b');wireLog('p');
   $('pHistBox').addEventListener('toggle',function(){if(this.open)renderHist();});
-  $('verTxt').textContent='Versión '+VERSION;
-  if(!TEST_LOG)document.querySelectorAll('.tlog').forEach(function(e){e.classList.add('hide');});
+    if(!TEST_LOG)document.querySelectorAll('.tlog').forEach(function(e){e.classList.add('hide');});
   $('pickBaby').addEventListener('click',function(){setMode('baby');});
   $('pickParent').addEventListener('click',function(){setMode('parent');});
   $('gear').addEventListener('click',function(){show('sheet',true);});
   $('sheetClose').addEventListener('click',function(){show('sheet',false);});
   $('pSearchBtn').addEventListener('click',function(){S.searchPaused=false;S.searchT=Date.now();});
   $('changeRole').addEventListener('click',function(){
-    if(!confirm('¿Cambiar el rol de este móvil? Se desconectará.'))return;
+    if(!confirm(t('cRole')))return;
     if(S.mic)stopMic();else resetLink();
     try{localStorage.removeItem('vb-mode');}catch(e){}
     show('sheet',false);setMode(null);

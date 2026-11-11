@@ -20,7 +20,7 @@ Los dos móviles deben estar en el mismo WiFi y con internet (solo para encontra
 **La primera vez (con PIN):**
 0. La primera vez que abres la página en cada móvil, elige **Móvil del bebé** o **Móvil de padres** (se recuerda; se cambia en *Ajustes → Este móvil*).
 1. **Móvil del bebé:** pulsa **Crear PIN** (acepta el permiso del micrófono). Aparece un PIN de 6 cifras.
-2. **Móvil de padres:** escribe el PIN → **Conectar** (acepta el permiso del micrófono; solo sirve para que Safari use la red local, no graba nada).
+2. **Móvil de padres:** escribe el PIN → **Conectar**. Desde la versión 5.0 ya no pide permiso de micrófono (solo escucha). Si en algún iPhone no llegara a conectar, activa en *Ajustes → Conexión* la opción **Compatibilidad** (pide un permiso puntual de micrófono, no graba nada). La app lo sugiere sola si tras 20 s no conecta.
 3. En unos segundos conectan. Los dos móviles guardan un secreto largo y el PIN ya no hace falta.
 
 **Después (sin PIN):** el móvil de padres busca solo al bebé. Si en 10 minutos no lo encuentra (y nunca se conectó en esa sesión), deja de buscar para ahorrar batería y muestra **Buscar de nuevo**; también vuelve a buscar al reabrir la página. En el del bebé, abre la página y pulsa el círculo (**Activar**): se conectan solos. Si se corta el WiFi o se cierra una página, se reconectan solos en cuanto vuelve.
@@ -28,6 +28,10 @@ Los dos móviles deben estar en el mismo WiFi y con internet (solo para encontra
 **Emparejar con otro móvil:** en *Ajustes* de cualquiera de los dos, pulsa **Emparejar con otro móvil**. Olvida el emparejamiento en los dos (si están conectados) y vuelve a pedir un PIN. Si no estaban conectados, hay que pulsarlo también en el otro.
 
 Cómo funciona: el PIN, y después el secreto guardado, solo sirven para que los dos móviles se encuentren a través de un servicio de mensajes (por defecto ntfy.sh, gratuito y público). El audio va directo de móvil a móvil por tu WiFi y no pasa por internet.
+
+## Idiomas
+
+Español (por defecto), English, Deutsch, Français e Italiano. Se cambia en *Ajustes → Idioma* o en la pantalla inicial, y se recuerda en el móvil. Cada móvil tiene su propio idioma. Las traducciones conviene que las revise un hablante nativo. El registro de pruebas exportado sigue en español.
 
 ## Servicio de emparejamiento propio (opcional, gratis)
 
