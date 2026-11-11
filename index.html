@@ -253,7 +253,7 @@ summary{cursor:pointer;font-weight:600;min-height:40px;display:flex;align-items:
 'use strict';
 var $=function(i){return document.getElementById(i);};
 var SIGNAL=window.VB_SIGNAL||'https://ntfy.sh/'; /* servicio que solo reparte mensajes para encontrarse; el audio no pasa por él. Para usar el servicio propio, cambia esta URL (ver README) */
-var VERSION='5.1';
+var VERSION='5.2';
 var I18N={
 es:{pickT:'¿Qué móvil es este?',pickL:'Se elige una vez y se recuerda.',pickBabyT:'Móvil del bebé',pickBabyD:'Se queda en la habitación y envía el sonido.',pickParT:'Móvil de padres',pickParD:'Escucha al bebé desde cualquier sitio de casa.',langL:'Idioma',gearA:'Ajustes',
 micAct:'Activar',micOff:'Apagar',micPause:'Pausar',micResume:'Reanudar',
@@ -361,7 +361,7 @@ var SILENT='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACAB
 var S={pc:null,dc:null,mic:null,sendTrack:null,ctx:null,an:null,buf:null,lvl:-90,lastLoud:0,paused:false,
   connected:false,thr:-60,hold:5000,lastSend:0,wake:null,remote:null,audio:null,
   rlvl:-90,lastMsg:0,lostOn:false,lastSoundAt:null,beepT:null,mode:'baby',es:null,esTimer:null,bytes:0,statT:0,thrTouch:0,lastActive:false,awake:false,node:null,dest:null,gateReady:false,active:false,calEnd:0,calVals:[],calRun:false,searchT:0,searchPaused:false,connectedOnce:false,
-  role:null,retryT:0,secretPending:null,lastNonce:null,autoListen:false,joining:false,ipsOk:false,ips:false,tipOn:false,tipT:0,lang:'es',poll:null,
+  role:null,retryT:0,secretPending:null,lastNonce:null,autoListen:false,joining:false,ipsOk:false,sig:null,esTimer2:0,ips:false,tipOn:false,tipT:0,lang:'es',poll:null,
   snd:{baby:{on:0,peak:-90},parent:{on:0,peak:-90}},dropAt:0,lostAt:0,agg:{n:0,sum:0,max:-90,act:0,t:0,b0:0},lastW:0,histT:0,ra:0};
 window.__vb=S;
 
@@ -408,6 +408,7 @@ async function keepAwake(){
 document.addEventListener('visibilitychange',function(){
   if(document.visibilityState==='visible'&&(S.mic||S.connected)){keepAwake();}
   if(document.visibilityState==='visible'&&S.searchPaused){S.searchPaused=false;S.searchT=Date.now();}
+  if(document.visibilityState==='visible'&&!S.connected&&S.sig){tlog(S.mode,{k:'link',d:'pantalla activa: se reabre la escucha'});S.lastNonce=null;sigListen(S.sig.topic,S.sig.onMsg);}
   if(S.ctx&&S.ctx.state==='suspended'){S.ctx.resume().catch(function(){});}
 });
 
@@ -514,10 +515,13 @@ async function sigPost(topic,txt){
   if(!r.ok)throw new Error('servicio de emparejamiento '+r.status);
 }
 function sigListen(topic,onMsg){
-  sigStop();
+  sigStop();S.sig={topic:topic,onMsg:onMsg};
   if(KIND==='sse'){
     var es=new EventSource(SIGNAL+topic+'/sse?since=all');
     es.addEventListener('message',function(e){try{var j=JSON.parse(e.data);if(j&&typeof j.message==='string')onMsg(j.message);}catch(_){}});
+    es.onerror=function(){ /* iOS puede cerrar la conexión de aviso en segundo plano: se reabre sola */
+      if(es.readyState===2&&S.es===es){clearTimeout(S.esTimer2);S.esTimer2=setTimeout(function(){if(S.es===es&&S.sig&&!S.connected){tlog(S.role||S.mode,{k:'link',d:'aviso cerrado: se reabre'});sigListen(S.sig.topic,S.sig.onMsg);}},3000);}
+    };
     S.es=es;
   }else{
     var L={stop:false,after:'',t0:Date.now()};S.poll=L;
@@ -533,7 +537,7 @@ function sigListen(topic,onMsg){
     })();
   }
 }
-function sigStop(){if(S.es){S.es.close();S.es=null;}if(S.poll){S.poll.stop=true;S.poll=null;}clearTimeout(S.esTimer);}
+function sigStop(){if(S.es){S.es.close();S.es=null;}if(S.poll){S.poll.stop=true;S.poll=null;}clearTimeout(S.esTimer);clearTimeout(S.esTimer2);S.sig=null;}
 
 function newPC(role){
   if(S.pc){try{S.pc.close();}catch(e){}}
@@ -750,7 +754,7 @@ async function babyAuto(){ /* reconexión sin PIN con el secreto guardado */
   clearTimeout(S.retryT);
   var pr=getPair('baby');
   if(!pr||!S.mic||S.connected)return;
-  var again=300000;
+  var again=900000;
   try{
     setMsg('bMsg',t('mWaitParents'));
     await babyOffer(await topicFor(pr.secret));
@@ -826,7 +830,7 @@ function parentAuto(){ /* con emparejamiento guardado: busca al bebé solo mient
   var pr=getPair('parent');
   if(!pr||S.mode!=='parent'||S.joining||S.searchPaused)return;
   var healthy=S.connected&&!S.lostOn&&Date.now()-S.lastMsg<6000;
-  var listening=!!(S.es||S.poll);
+  var listening=!!((S.es&&S.es.readyState!==2)||S.poll);
   if(!healthy&&!listening){if(!S.searchT)S.searchT=Date.now();startParentListen(pr);}
   else if(healthy&&listening&&S.autoListen){sigStop();S.autoListen=false;S.searchT=0;}
   else if(!healthy&&listening&&!S.connectedOnce&&S.searchT&&Date.now()-S.searchT>600000){
