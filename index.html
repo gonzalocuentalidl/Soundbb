@@ -8,8 +8,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=IBM+Plex+Mono:wght@400;500&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* Layout: una columna de 520px máx., móvil primero.
-   Cabecera → selector de modo → tarjeta principal → tarjeta de emparejamiento (se oculta al conectar) */
+/* Diseño: una columna de 520 px máx., móvil primero.
+   Cabecera → (elige rol la primera vez) → círculo grande de estado → texto de estado → tarjeta solo si hace falta.
+   Todo lo secundario vive en la hoja de Ajustes (botón de la esquina). */
 :root{
   --bg:#f3f5f1; --surface:#ffffff; --ink:#14201a; --muted:#5b6b62;
   --accent:#0c7a4b; --accent-ink:#ffffff; --alert:#c2410c; --line:#d8dfd9;
@@ -33,99 +34,109 @@
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.5;
-  padding:max(20px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(28px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));}
+  padding:max(14px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(28px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));}
 main{max-width:520px;margin:0 auto}
-h1,h2{font-family:var(--font-head);margin:0;line-height:1.1}
+h1,h2,h3{font-family:var(--font-head);margin:0;line-height:1.1}
 h1{font-size:30px;letter-spacing:-.02em}
-h2{font-size:19px;margin-bottom:10px}
-.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
-.brand{display:flex;align-items:center;gap:10px}
+h2{font-size:20px;margin-bottom:8px}
+button,input,textarea{font:inherit}
+button:focus-visible,input:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.hide{display:none!important}
+
+.top{display:flex;align-items:center;justify-content:space-between;min-height:52px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--font-head);font-weight:700;font-size:21px;letter-spacing:-.01em}
 .brand svg{width:34px;height:34px;flex:none}
-.sub{color:var(--muted);margin:4px 0 0;font-size:14px}
-.preview{border:1px dashed var(--line);border-radius:12px;padding:10px 12px;font-size:13.5px;color:var(--muted);margin:14px 0 18px;background:var(--surface)}
-.preview b{color:var(--ink)}
-.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:5px;margin-bottom:16px}
-.seg button{font:inherit;font-weight:600;border:0;border-radius:10px;padding:12px 8px;background:transparent;color:var(--muted);cursor:pointer;min-height:48px}
-.seg button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink)}
-button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.icon-btn{width:48px;height:48px;border-radius:14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);display:grid;place-items:center;cursor:pointer}
+.icon-btn svg{width:24px;height:24px}
+
+/* círculo de estado */
+.hero{position:relative;width:min(300px,78vw);aspect-ratio:1;margin:26px auto 12px;display:grid;place-items:center;--lvl:0;--c:var(--muted)}
+.ring{position:absolute;inset:0;border-radius:50%;border:2px solid var(--c);opacity:.38;transform:scale(calc(.72 + var(--lvl)*.28));transition:transform .15s ease-out,opacity .3s,border-color .3s}
+.ring.r2{opacity:.2;transform:scale(calc(.6 + var(--lvl)*.4))}
+.core{position:relative;width:62%;aspect-ratio:1;border-radius:50%;border:3px solid var(--c);background:var(--surface);color:var(--c);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-weight:700;font-size:17px;cursor:pointer;transition:background .3s,color .3s,border-color .3s;padding:0}
+.core svg{width:46px;height:46px}
+.core.static{cursor:default}
+[data-state="off"]{--c:var(--muted)}
+[data-state="wait"],[data-state="search"],[data-state="paused"]{--c:var(--alert)}
+[data-state="idle"],[data-state="live"]{--c:var(--accent)}
+[data-state="live"] .core{background:var(--accent);color:var(--accent-ink)}
+[data-state="lost"]{--c:var(--alert)}
+[data-state="lost"] .core{background:var(--alert);color:#fff}
+@keyframes breathe{0%,100%{opacity:.18}50%{opacity:.5}}
+[data-state="wait"] .ring,[data-state="search"] .ring{animation:breathe 2.4s ease-in-out infinite}
+.state{font-size:28px;text-align:center;margin:6px 0 4px;letter-spacing:-.01em}
+.substate{text-align:center;color:var(--muted);margin:0 auto 18px;min-height:1.5em;max-width:34ch}
+.hint{color:var(--muted);font-size:14px;margin:8px 0 0;text-align:center}
+.center{justify-content:center}
+
+/* elegir rol */
+.lead{color:var(--muted);margin:8px 0 6px}
+#picker{padding-top:22px}
+.pick{display:flex;gap:16px;align-items:center;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px;margin-top:14px;color:var(--ink);cursor:pointer;min-height:92px}
+.pick svg{width:42px;height:42px;color:var(--accent);flex:none}
+.pick b{display:block;font-family:var(--font-head);font-size:21px}
+.pick small{color:var(--muted);font-size:14.5px;line-height:1.35;display:block;margin-top:2px}
+
+/* tarjetas y controles */
 .card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:16px}
-.status{display:flex;align-items:center;gap:10px;font-weight:600}
-.dot{width:12px;height:12px;border-radius:50%;background:var(--muted);flex:none}
-.dot.ok{background:var(--accent);box-shadow:0 0 0 6px var(--glow)}
-.dot.warn{background:var(--alert);box-shadow:0 0 0 6px rgba(194,65,12,.18)}
-.meter{display:flex;align-items:flex-end;gap:3px;height:84px;margin:16px 0 6px;position:relative}
-.meter i{flex:1;background:var(--line);border-radius:3px;height:12%;transition:height .08s,background .15s}
-.meter i.on{background:var(--accent)}
-.thr{display:none}
-details{margin-top:14px;border-top:1px solid var(--line);padding-top:10px}
-summary{cursor:pointer;font-weight:600;color:var(--muted);min-height:36px;display:flex;align-items:center}
-summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
-.read{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:13px;color:var(--muted)}
-.read b{color:var(--ink);font-weight:500}
-.mic{display:flex;justify-content:center;margin:6px 0 14px}
-.micbtn{width:132px;height:132px;border-radius:50%;border:3px solid var(--accent);background:var(--surface);color:var(--accent);font:inherit;font-weight:700;font-size:15px;cursor:pointer;display:grid;place-items:center;text-align:center;line-height:1.2}
-.micbtn[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btn{font-weight:600;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:12px;padding:11px 16px;min-height:46px;cursor:pointer}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn:disabled{opacity:.5}
 label{display:block;font-size:14px;font-weight:600;margin:14px 0 6px}
 input[type=range]{width:100%;accent-color:var(--accent);height:32px}
-.code{font-family:var(--font-mono);font-size:13px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;word-break:break-all;color:var(--muted)}
-.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.btn{font:inherit;font-weight:600;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:11px 14px;min-height:44px;cursor:pointer}
-.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-ol{margin:0;padding-left:20px}
-li{margin:6px 0}
-.banner{display:block;border-radius:12px;padding:12px 14px;margin-bottom:14px;font-weight:600;background:var(--alert);color:#fff}
-.banner.show{display:block}
-.hide{display:none}
-.foot{color:var(--muted);font-size:13px;margin-top:6px}
-@media (prefers-reduced-motion:reduce){.meter i{transition:none}}
-textarea.code{width:100%;resize:none;display:block;margin-top:8px;color:var(--ink)}
+.code{font-family:var(--font-mono);font-size:13px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:var(--ink)}
+.pin{font-family:var(--font-mono);font-size:48px;font-weight:500;letter-spacing:.18em;text-align:center;margin:16px 0 6px;color:var(--accent)}
+input.pin-in{width:100%;font-size:32px;text-align:center;letter-spacing:.2em;font-family:var(--font-mono);background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:6px}
+.read{display:flex;justify-content:space-between;gap:12px;font-family:var(--font-mono);font-size:13px;color:var(--muted);margin-top:4px}
+.read b{color:var(--ink);font-weight:500}
+.foot{color:var(--muted);font-size:13.5px;margin:6px 0 0}
 .msg{font-size:13.5px;color:var(--muted);margin:10px 0 0;min-height:1em}
 .msg.err{color:var(--alert);font-weight:600}
+.banner{border-radius:14px;padding:14px 16px;margin:10px 0 0;font-weight:600;background:var(--alert);color:#fff}
 .banner .btn{margin-top:10px;background:#fff;color:#14201a;border-color:#fff}
-.pin{font-family:var(--font-mono);font-size:46px;font-weight:500;letter-spacing:.18em;text-align:center;margin:16px 0 6px;color:var(--accent)}
-input.pin-in{width:100%;font-size:30px;text-align:center;letter-spacing:.2em;font-family:var(--font-mono);background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:6px}
-.hist div{font-size:14px;padding:5px 0;border-bottom:1px solid var(--line);color:var(--ink)}
-.hist div span{color:var(--muted);font-family:var(--font-mono);font-size:13px;margin-right:6px}
+.chk{display:flex;gap:12px;align-items:center;font-weight:500;margin:6px 0 0;font-size:15px}
+.chk input{width:24px;height:24px;accent-color:var(--accent);flex:none}
+
+/* hoja de ajustes */
+.sheet{position:fixed;inset:0;z-index:20;background:var(--bg);overflow-y:auto;
+  padding:max(14px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(28px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.sheet-in{max-width:520px;margin:0 auto}
+.sheet-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;min-height:52px}
+.sheet-top h2{font-size:26px;margin:0}
+.group{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:12px}
+.group h3{font-size:16px;margin:0 0 6px}
+.group details{margin:0}
+summary{cursor:pointer;font-weight:600;min-height:40px;display:flex;align-items:center;font-family:var(--font-head);font-size:16px}
+.hist div{font-size:14px;padding:5px 0;border-bottom:1px solid var(--line)}
+.hist div span{color:var(--muted);font-family:var(--font-mono);font-size:13px;margin-right:8px}
+@media (prefers-reduced-motion:reduce){.ring{transition:none;animation:none!important}}
 </style>
 </head>
 <body>
 <main>
-  <div class="top">
-    <div class="brand">
-      <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="9" fill="none" stroke="var(--accent)" stroke-width="3"/><path d="M29 20c6 0 8 8 4 12" fill="none" stroke="var(--accent)" stroke-width="3" stroke-dasharray="1 5" stroke-linecap="round"/><path d="M11 20c-6 0-8-8-4-12" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/></svg>
-      <div><h1>Vigilabebés</h1><p class="sub">Dos móviles, un PIN, sin cuentas.</p></div>
-    </div>
-  </div>
-
+  <header class="top">
+    <div class="brand"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="9" fill="none" stroke="var(--accent)" stroke-width="3"/><path d="M29 20c6 0 8 8 4 12" fill="none" stroke="var(--accent)" stroke-width="3" stroke-dasharray="1 5" stroke-linecap="round"/><path d="M11 20c-6 0-8-8-4-12" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/></svg><span>Vigilabebés</span></div>
+    <button class="icon-btn hide" id="gear" aria-label="Ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h9M19 7h1M4 17h1M11 17h9"/><circle cx="16" cy="7" r="2.4"/><circle cx="8" cy="17" r="2.4"/></svg></button>
+  </header>
   <p class="msg err" id="support"></p>
 
-  <div class="seg" role="tablist" aria-label="Modo">
-    <button role="tab" id="tabBaby" aria-selected="true">Móvil del bebé</button>
-    <button role="tab" id="tabParent" aria-selected="false">Móvil de padres</button>
-  </div>
+  <!-- ELEGIR ROL (primera vez) -->
+  <section id="picker" class="hide">
+    <h1>¿Qué móvil es este?</h1>
+    <p class="lead">Se elige una vez y se recuerda.</p>
+    <button class="pick" id="pickBaby"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><span><b>Móvil del bebé</b><small>Se queda en la habitación y envía el sonido.</small></span></button>
+    <button class="pick" id="pickParent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 9a4 4 0 0 1 0 6M19 6.5a8 8 0 0 1 0 11"/></svg><span><b>Móvil de padres</b><small>Escucha al bebé desde cualquier sitio de casa.</small></span></button>
+  </section>
 
-  <!-- MODO BEBÉ -->
-  <section id="baby">
-    <div class="card">
-      <div class="status"><span class="dot" id="bDot"></span><span id="bStatus">Micrófono apagado</span></div>
-      <div class="mic"><button class="micbtn" id="micBtn" aria-pressed="false">Activar<br>micrófono</button></div>
-      <div class="meter" id="bMeter" aria-hidden="true"></div>
-      <p class="foot" id="bSend" style="text-align:center">&nbsp;</p>
-      <details><summary>Ajustes</summary>
-        <div class="read"><span>Nivel <b id="bDb">−90 dB</b></span></div>
-        <div class="read" style="margin-top:6px"><span>Sensibilidad <b id="thrVal">−45 dB</b></span></div>
-        <p class="foot">Se cambia desde el móvil de padres.</p>
-        <label class="chk" style="display:flex;gap:10px;align-items:center;font-weight:500;margin-top:14px"><input type="checkbox" id="bAwake" style="width:22px;height:22px;accent-color:var(--accent)"> Mantener la pantalla encendida</label>
-        <div class="row"><button class="btn" id="bRepair">Emparejar con otro móvil</button></div>
-      </details>
-      <details class="tlog"><summary>Registro de pruebas</summary>
-        <p class="foot" style="margin-top:6px">Guarda en este móvil lo que ocurre (sonidos, cortes, reconexiones, pantalla bloqueada) para analizarlo después. Anota el % de batería cuando quieras.</p>
-        <div class="row"><input id="bNote" class="code" style="flex:1;min-width:0" placeholder="Nota, p. ej. batería 80 %" aria-label="Nota"><button class="btn" id="bNoteBtn">Anotar</button></div>
-        <div class="row"><button class="btn primary" id="bExport">Exportar</button><button class="btn" id="bClear">Borrar</button></div>
-        <p class="msg" id="bLogMsg"></p>
-      </details>
-      <p class="foot">Si puedes, deja este móvil cargando y cerca de la cuna. La pantalla se bloquea sola para ahorrar batería.</p>
+  <!-- MÓVIL DEL BEBÉ -->
+  <section id="baby" class="hide">
+    <div class="hero" id="bHero" data-state="off">
+      <i class="ring r1"></i><i class="ring r2"></i>
+      <button class="core" id="micBtn" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><span id="micTxt">Activar</span></button>
     </div>
+    <h2 class="state" id="bStatus">Micrófono apagado</h2>
+    <p class="substate" id="bSend">Pulsa el círculo para empezar</p>
     <div class="card hide" id="bPair">
       <div id="bNew">
         <h2>Emparejar con el móvil de padres</h2>
@@ -133,92 +144,122 @@ input.pin-in{width:100%;font-size:30px;text-align:center;letter-spacing:.2em;fon
         <div class="row"><button class="btn primary" id="bCreate">Crear PIN</button></div>
         <div class="pin hide" id="bPin" aria-live="polite">------</div>
       </div>
-      <div id="bKnown" class="hide">
-        <h2>Emparejado con un móvil de padres</h2>
-        <p class="foot" style="margin-top:0" id="bKnownTxt"></p>
-      </div>
+      <div id="bKnown" class="hide"><p class="foot" style="margin-top:0" id="bKnownTxt"></p></div>
       <p class="msg" id="bMsg" role="status"></p>
     </div>
+    <p class="hint">Deja este móvil cerca de la cuna, mejor cargando.</p>
   </section>
 
-  <!-- MODO PADRES -->
+  <!-- MÓVIL DE PADRES -->
   <section id="parent" class="hide">
     <div class="banner hide" id="lost" role="alert">Conexión perdida. Intentando reconectar solo…<br><button class="btn" id="lostRepair">Emparejar con otro móvil</button></div>
-    <div class="card hide" id="pMain">
-      <div class="status"><span class="dot" id="pDot"></span><span id="pStatus">Conectado · escuchando</span></div>
-      <div class="meter" id="pMeter" aria-hidden="true"></div>
-      <p class="foot" id="pLast" style="text-align:center">Último sonido: ninguno aún</p>
-      <div class="row hide" id="pTap"><button class="btn primary" id="pTapBtn" style="width:100%">Toca para activar el sonido</button></div>
-      <p class="foot" style="text-align:center">El volumen se sube con los botones del iPhone.</p>
-      <details id="pHistBox"><summary>Historial</summary>
-        <p class="foot" id="pHistSum" style="margin-top:6px"></p>
-        <div class="hist" id="pHist"></div>
+    <div id="pMain" class="hide">
+      <div class="hero" id="pHero" data-state="search">
+        <i class="ring r1"></i><i class="ring r2"></i>
+        <div class="core static"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 9a4 4 0 0 1 0 6M19 6.5a8 8 0 0 1 0 11"/></svg></div>
+      </div>
+      <h2 class="state" id="pStatus">Buscando al bebé…</h2>
+      <p class="substate" id="pLast">En el móvil del bebé, pulsa Activar</p>
+      <div class="row center hide" id="pTap"><button class="btn primary" id="pTapBtn">Toca para activar el sonido</button></div>
+      <div class="row center hide" id="pSearchRow"><button class="btn primary" id="pSearchBtn">Buscar de nuevo</button></div>
+      <p class="hint">El volumen se sube con los botones del iPhone.</p>
+    </div>
+    <div class="card" id="pPair">
+      <h2>Emparejar con el móvil del bebé</h2>
+      <p class="foot" style="margin-top:0">En el móvil del bebé pulsa <b>Crear PIN</b> y escribe aquí las 6 cifras. Solo hace falta la primera vez.</p>
+      <input class="pin-in" id="pPin" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code" placeholder="000000" aria-label="PIN de 6 cifras">
+      <div class="row"><button class="btn primary" id="pJoin">Conectar</button></div>
+      <p class="msg" id="pMsg" role="status"></p>
+    </div>
+  </section>
+</main>
+
+<!-- AJUSTES -->
+<div class="sheet hide" id="sheet" role="dialog" aria-label="Ajustes">
+  <div class="sheet-in">
+    <div class="sheet-top"><h2>Ajustes</h2><button class="btn primary" id="sheetClose">Listo</button></div>
+
+    <div id="setBaby" class="hide">
+      <div class="group"><h3>Sensibilidad</h3>
+        <div class="read"><span>Nivel del cuarto</span><b id="bDb">−90 dB</b></div>
+        <div class="read"><span>Envía sonido por encima de</span><b id="thrVal">−60 dB</b></div>
+        <p class="foot">Se cambia desde el móvil de padres.</p>
+      </div>
+      <div class="group"><h3>Pantalla</h3>
+        <label class="chk"><input type="checkbox" id="bAwake"> Mantener la pantalla encendida</label>
+        <p class="foot">Apagado, la pantalla se bloquea sola y se ahorra batería. El sonido sigue enviándose.</p>
+      </div>
+      <div class="group"><h3>Emparejamiento</h3>
+        <button class="btn" id="bRepair">Emparejar con otro móvil</button>
+      </div>
+      <div class="group tlog">      <details ><summary>Registro de pruebas</summary>
+        <p class="foot" style="margin-top:6px">Guarda en este móvil lo que ocurre (sonidos, cortes, reconexiones, pantalla bloqueada) para analizarlo después. Anota el % de batería cuando quieras.</p>
+        <div class="row"><input id="bNote" class="code" style="flex:1;min-width:0" placeholder="Nota, p. ej. batería 80 %" aria-label="Nota"><button class="btn" id="bNoteBtn">Anotar</button></div>
+        <div class="row"><button class="btn primary" id="bExport">Exportar</button><button class="btn" id="bClear">Borrar</button></div>
+        <p class="msg" id="bLogMsg"></p>
       </details>
-      <details><summary>Ajustes</summary>
-        <div class="read"><span>Nivel del cuarto <b id="pDb">−90 dB</b></span></div>
-        <label for="pThr">Sensibilidad: el bebé envía sonido por encima de <span id="pThrVal">−45</span> dB</label>
-        <input type="range" id="pThr" min="-85" max="-15" value="-45">
-        <p class="foot">Más a la izquierda = más sensible. Compara con el nivel del cuarto de arriba.</p>
+</div>
+    </div>
+
+    <div id="setParent" class="hide">
+      <div class="group"><h3>Sensibilidad</h3>
+        <div class="read"><span>Nivel del cuarto</span><b id="pDb">−90 dB</b></div>
+        <label for="pThr">El bebé envía sonido por encima de <span id="pThrVal">−60</span> dB</label>
+        <input type="range" id="pThr" min="-85" max="-15" value="-60">
+        <p class="foot">Más a la izquierda = más sensible. Compara con el nivel del cuarto.</p>
         <div class="row"><button class="btn" id="pCal">Calibrar (10 s de silencio)</button></div>
         <p class="msg" id="pCalMsg" role="status"></p>
-        <div class="read" style="margin-top:6px"><span id="pAud">Audio: —</span></div>
-        <label class="chk" style="display:flex;gap:10px;align-items:center;font-weight:500;margin-top:14px"><input type="checkbox" id="pAwake" style="width:22px;height:22px;accent-color:var(--accent)"> Mantener la pantalla encendida</label>
+      </div>
+      <div class="group">
+        <details id="pHistBox"><summary>Historial</summary>
+          <p class="foot" id="pHistSum" style="margin-top:6px"></p>
+          <div class="hist" id="pHist"></div>
+        </details>
+      </div>
+      <div class="group"><h3>Pantalla</h3>
+        <label class="chk"><input type="checkbox" id="pAwake"> Mantener la pantalla encendida</label>
+        <p class="foot">Apagado, la pantalla se bloquea sola y se ahorra batería.</p>
+      </div>
+      <div class="group"><h3>Conexión</h3>
+        <div class="read"><span id="pAud">Audio: —</span></div>
         <div class="row"><button class="btn" id="pRepair">Emparejar con otro móvil</button></div>
-      </details>
-      <details class="tlog"><summary>Registro de pruebas</summary>
+      </div>
+      <div class="group tlog">      <details ><summary>Registro de pruebas</summary>
         <p class="foot" style="margin-top:6px">Guarda en este móvil lo que ocurre (sonidos, cortes, reconexiones, pantalla bloqueada) para analizarlo después. Anota el % de batería cuando quieras.</p>
         <div class="row"><input id="pNote" class="code" style="flex:1;min-width:0" placeholder="Nota, p. ej. batería 80 %" aria-label="Nota"><button class="btn" id="pNoteBtn">Anotar</button></div>
         <div class="row"><button class="btn primary" id="pExport">Exportar</button><button class="btn" id="pClear">Borrar</button></div>
         <p class="msg" id="pLogMsg"></p>
       </details>
+</div>
     </div>
-    <div class="card" id="pPair">
-      <div id="pNew">
-        <h2>Emparejar con el móvil del bebé</h2>
-        <p class="foot" style="margin-top:0">En el móvil del bebé pulsa <b>Crear PIN</b> y escribe aquí las 6 cifras. Solo hace falta la primera vez.</p>
-        <input class="pin-in" id="pPin" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code" placeholder="000000" aria-label="PIN de 6 cifras">
-        <div class="row"><button class="btn primary" id="pJoin">Conectar</button></div>
-      </div>
-      <div id="pKnown" class="hide">
-        <h2>Buscando al bebé…</h2>
-        <p class="foot" style="margin-top:0">Ya estáis emparejados. En el móvil del bebé pulsa <b>Activar micrófono</b> y se conectará solo.</p>
-        <div class="row"><button class="btn" id="pForget">Emparejar con otro móvil</button></div>
-      </div>
-      <p class="msg" id="pMsg" role="status"></p>
-    </div>
-  </section>
 
-  <p class="foot">Los dos móviles deben estar en el mismo WiFi de casa, con internet para encontrarse. El audio va directo entre ellos y no gasta datos móviles.</p>
-</main>
+    <div class="group"><h3>Este móvil</h3>
+      <button class="btn" id="changeRole">Cambiar el rol de este móvil</button>
+      <p class="foot" id="verTxt"></p>
+      <p class="foot">Los dos móviles deben estar en el mismo WiFi, con internet para encontrarse. El audio va directo entre ellos y no gasta datos móviles.</p>
+    </div>
+  </div>
+</div>
 
 <script>
 (function(){
 'use strict';
 var $=function(i){return document.getElementById(i);};
-var N=28;
 var SIGNAL=window.VB_SIGNAL||'https://ntfy.sh/'; /* servicio que solo reparte mensajes para encontrarse; el audio no pasa por él. Para usar el servicio propio, cambia esta URL (ver README) */
-var VERSION='3.0';
+var VERSION='4.0';
 var TEST_LOG=true; /* registro de pruebas: pon false para quitarlo en versiones finales */
 var KIND=window.VB_SIGNAL_KIND||(/ntfy\.sh/.test(SIGNAL)?'sse':'poll');
 var SILENT='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
 var S={pc:null,dc:null,mic:null,sendTrack:null,ctx:null,an:null,buf:null,lvl:-90,lastLoud:0,paused:false,
   connected:false,thr:-60,hold:5000,lastSend:0,wake:null,remote:null,audio:null,
-  rlvl:-90,lastMsg:0,lostOn:false,lastSoundAt:null,beepT:null,mode:'baby',es:null,esTimer:null,bytes:0,statT:0,thrTouch:0,lastActive:false,awake:false,node:null,dest:null,gateReady:false,active:false,calEnd:0,calVals:[],calRun:false,
+  rlvl:-90,lastMsg:0,lostOn:false,lastSoundAt:null,beepT:null,mode:'baby',es:null,esTimer:null,bytes:0,statT:0,thrTouch:0,lastActive:false,awake:false,node:null,dest:null,gateReady:false,active:false,calEnd:0,calVals:[],calRun:false,searchT:0,searchPaused:false,connectedOnce:false,
   role:null,retryT:0,secretPending:null,lastNonce:null,autoListen:false,joining:false,ipsOk:false,poll:null,
   snd:{baby:{on:0,peak:-90},parent:{on:0,peak:-90}},dropAt:0,lostAt:0,agg:{n:0,sum:0,max:-90,act:0,t:0,b0:0},lastW:0,histT:0,ra:0};
 window.__vb=S;
 
 /* ---------- utilidades ---------- */
-function build(el){for(var i=0;i<N;i++){el.appendChild(document.createElement('i'));}}
+function hero(id,state,db){var e=$(id);if(e.dataset.state!==state)e.dataset.state=state;e.style.setProperty('--lvl',db2pct(db).toFixed(2));}
 function db2pct(d){return Math.max(0,Math.min(1,(d+90)/75));}
-function paint(el,d,live){
-  var bars=el.querySelectorAll('i'),p=db2pct(d),t=Date.now();
-  for(var i=0;i<bars.length;i++){
-    var w=live?(0.55+0.45*Math.sin(i*0.7+t/260)):1;
-    bars[i].style.height=(12+Math.max(0,Math.min(88,p*100*w)))+'%';
-    bars[i].classList.toggle('on',(i/N)<p&&live);
-  }
-}
 function setMsg(id,t,err){var e=$(id);e.textContent=t||'';e.className='msg'+(err?' err':'');}
 function show(id,v){$(id).classList.toggle('hide',!v);}
 function b64(u8){var s='',i;for(i=0;i<u8.length;i+=0x8000){s+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000));}
@@ -258,6 +299,7 @@ async function keepAwake(){
 }
 document.addEventListener('visibilitychange',function(){
   if(document.visibilityState==='visible'&&(S.mic||S.connected)){keepAwake();}
+  if(document.visibilityState==='visible'&&S.searchPaused){S.searchPaused=false;S.searchT=Date.now();}
   if(S.ctx&&S.ctx.state==='suspended'){S.ctx.resume().catch(function(){});}
 });
 
@@ -370,7 +412,7 @@ function sigListen(topic,onMsg){
     es.addEventListener('message',function(e){try{var j=JSON.parse(e.data);if(j&&typeof j.message==='string')onMsg(j.message);}catch(_){}});
     S.es=es;
   }else{
-    var L={stop:false,after:''};S.poll=L;
+    var L={stop:false,after:'',t0:Date.now()};S.poll=L;
     (async function loop(){
       while(!L.stop){
         try{
@@ -378,7 +420,7 @@ function sigListen(topic,onMsg){
           var j=await r.json();
           (j.msgs||[]).forEach(function(m){if(m.id>L.after)L.after=m.id;if(!L.stop)onMsg(m.message);});
         }catch(e){}
-        await new Promise(function(ok){setTimeout(ok,2000);});
+        var el=Date.now()-L.t0;await new Promise(function(ok){setTimeout(ok,el<60000?2000:el<600000?10000:30000);});
       }
     })();
   }
@@ -401,6 +443,7 @@ function newPC(role){
 }
 function onLinked(){
   tlog(S.role,S.dropAt?{k:'link',d:'reconectado',tras:Math.round((Date.now()-S.dropAt)/1000)+' s'}:{k:'link',d:'conectado'});S.dropAt=0;
+  S.connectedOnce=true;S.searchT=0;S.searchPaused=false;
   sigStop();clearTimeout(S.retryT);S.connected=true;S.lastMsg=Date.now();S.autoListen=false;
   setLost(false);keepAwake();setMsg('bMsg','');setMsg('pMsg','');
   if(S.role==='baby')maybeSendSecret();
@@ -417,7 +460,7 @@ function onDropped(){
 function resetLink(){
   sigStop();clearTimeout(S.retryT);
   if(S.pc){try{S.pc.close();}catch(e){}}
-  S.pc=null;S.dc=null;S.connected=false;S.remote=null;S.lastNonce=null;S.autoListen=false;S.secretPending=null;
+  S.pc=null;S.dc=null;S.connected=false;S.remote=null;S.lastNonce=null;S.autoListen=false;S.secretPending=null;S.searchT=0;S.searchPaused=false;S.connectedOnce=false;
   if(S.audio){S.audio.pause();S.audio.srcObject=null;}
   setLost(false);show('bPin',false);show('pTap',false);
   $('pPin').value='';setMsg('bMsg','');setMsg('pMsg','');
@@ -596,7 +639,7 @@ async function babyAuto(){ /* reconexión sin PIN con el secreto guardado */
   clearTimeout(S.retryT);
   var pr=getPair('baby');
   if(!pr||!S.mic||S.connected)return;
-  var again=90000;
+  var again=300000;
   try{
     setMsg('bMsg','Esperando al móvil de padres…');
     await babyOffer(await topicFor(pr.secret));
@@ -607,16 +650,16 @@ function babyTick(){
   if(S.mic)aggTick('baby',S.lvl,S.active&&!S.paused,0.1,0);
   if(S.calEnd&&Date.now()>=S.calEnd+500)finishCal();
   sendStatus();
-  var active=S.active&&!S.paused;
-  paint($('bMeter'),S.lvl,!!S.node);
+  var active=S.active&&!S.paused,st,sub,hs;
+  if(!S.mic){st='Micrófono apagado';sub='Pulsa el círculo para empezar';hs='off';}
+  else if(!S.connected){st=getPair('baby')?'Esperando a los padres':'Listo para emparejar';sub=getPair('baby')?'Se conectarán solos':'Crea un PIN y escríbelo en el móvil de padres';hs='wait';}
+  else if(S.paused){st='En pausa';sub='Los padres no te oyen';hs='paused';}
+  else if(active){st='Se oye algo';sub='Los padres te están oyendo';hs='live';}
+  else{st='Todo en silencio';sub='No se envía nada hasta que haya ruido';hs='idle';}
+  if(S.calEnd){st='Calibrando…';sub='Midiendo el silencio del cuarto';hs='wait';}
+  $('bStatus').textContent=st;$('bSend').textContent=sub;
+  hero('bHero',hs,S.mic?S.lvl:-90);
   $('bDb').textContent=Math.round(S.lvl)+' dB';
-  var st,dot='',snd=' ';
-  if(!S.mic){st='Micrófono apagado';}
-  else if(!S.connected){st='Micrófono listo · falta emparejar';dot=' warn';}
-  else if(S.paused){st='En pausa';dot=' warn';}
-  else{st=active?'Enviando sonido':'Escuchando en silencio';dot=' ok';snd=active?'Los padres te están oyendo':'Silencio: los padres no oyen nada';}
-  if(S.calEnd){st='Calibrando…';snd='Medición del silencio del cuarto';}
-  $('bStatus').textContent=st;$('bDot').className='dot'+dot;$('bSend').innerHTML=snd;
 }
 
 /* ---------- MODO PADRES ---------- */
@@ -655,7 +698,6 @@ async function join(){
   touch();
   $('pJoin').disabled=true;setMsg('pMsg','Buscando el móvil del bebé…');
   try{
-    await unlockIPs();
     parentListen(await topicFor(pin));
     S.esTimer=setTimeout(function(){
       if(!S.connected){sigStop();$('pJoin').disabled=false;
@@ -665,22 +707,26 @@ async function join(){
 }
 async function startParentListen(pr){
   S.joining=true;S.autoListen=true;
-  try{await unlockIPs();parentListen(await topicFor(pr.secret));}
+  try{parentListen(await topicFor(pr.secret));}
   catch(e){S.autoListen=false;}
   S.joining=false;
 }
 function parentAuto(){ /* con emparejamiento guardado: busca al bebé solo mientras no haya señal sana */
   var pr=getPair('parent');
-  if(!pr||S.mode!=='parent'||S.joining)return;
+  if(!pr||S.mode!=='parent'||S.joining||S.searchPaused)return;
   var healthy=S.connected&&!S.lostOn&&Date.now()-S.lastMsg<6000;
   var listening=!!(S.es||S.poll);
-  if(!healthy&&!listening){startParentListen(pr);}
-  else if(healthy&&listening&&S.autoListen){sigStop();S.autoListen=false;}
+  if(!healthy&&!listening){if(!S.searchT)S.searchT=Date.now();startParentListen(pr);}
+  else if(healthy&&listening&&S.autoListen){sigStop();S.autoListen=false;S.searchT=0;}
+  else if(!healthy&&listening&&!S.connectedOnce&&S.searchT&&Date.now()-S.searchT>600000){
+    sigStop();S.autoListen=false;S.searchPaused=true; /* tras 10 min sin encontrarlo, deja de buscar para ahorrar batería */
+  }
 }
 async function answer(topic,m){
   try{
     var rest=m.slice(2),k=rest.indexOf('.'),nonce=rest.slice(0,k);
     var offer=await unpack(rest.slice(k+1));
+    await unlockIPs();
     var pc=newPC('parent');
     pc.ontrack=function(e){S.remote=(e.streams&&e.streams[0])||new MediaStream([e.track]);attachAudio();};
     pc.ondatachannel=function(e){S.dc=e.channel;wireDC(S.dc);};
@@ -718,49 +764,51 @@ function parentTick(){
   parentAuto();
   if(S.connected&&S.mode==='parent')aggTick('parent',S.rlvl,S.ra,0.2,S.bytes);
   if(S.mode==='parent'&&$('pHistBox').open&&Date.now()-S.histT>5000)renderHist();
-  if(S.mode==='parent'&&S.connected){show('pTap',!!((S.ctx&&S.ctx.state!=='running')||(S.audio&&S.remote&&S.audio.paused)));}
   if(S.connected&&S.mode==='parent'&&Date.now()-S.lastMsg>6000&&!S.lostOn)setLost(true);
-  var live=S.connected&&!S.lostOn;
-  var d=live?S.rlvl:-90;
-  paint($('pMeter'),d,live&&Date.now()-S.lastMsg<1500&&d>-80);
-  $('pDb').textContent=Math.round(d)+' dB';
-  $('pLast').textContent='Último sonido: '+(S.lastSoundAt?S.lastSoundAt.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit',second:'2-digit'}):'ninguno aún');
+  var live=S.connected&&!S.lostOn,fresh=live&&Date.now()-S.lastMsg<1500,snd=fresh&&S.ra,hs,st;
+  if(S.lostOn){hs='lost';st='Sin señal del bebé';}
+  else if(S.connected){hs=snd?'live':'idle';st=snd?'Se oye al bebé':'Todo tranquilo';}
+  else{hs='search';st=S.searchPaused?'No encuentro al bebé':'Buscando al bebé…';}
+  $('pStatus').textContent=st;
+  hero('pHero',hs,fresh?S.rlvl:-90);
+  show('pSearchRow',S.searchPaused&&!S.connected&&!S.lostOn);
+  $('pDb').textContent=Math.round(live?S.rlvl:-90)+' dB';
+  $('pLast').textContent=S.lastSoundAt?'Último sonido a las '+clock(S.lastSoundAt.getTime()):
+    (live?'Aún no se ha oído nada':(S.searchPaused?'Activa el micrófono en el móvil del bebé y pulsa Buscar de nuevo':'En el móvil del bebé, pulsa Activar'));
+  if(S.mode==='parent'&&S.connected){show('pTap',!!((S.ctx&&S.ctx.state!=='running')||(S.audio&&S.remote&&S.audio.paused)));}
   if(S.pc&&S.connected&&S.mode==='parent'&&Date.now()-S.statT>1000){
     S.statT=Date.now();
-    S.pc.getStats().then(function(st){
-      st.forEach(function(r){if(r.type==='inbound-rtp'&&r.kind==='audio'){S.bytes=r.bytesReceived;}});
+    S.pc.getStats().then(function(st2){
+      st2.forEach(function(r){if(r.type==='inbound-rtp'&&r.kind==='audio'){S.bytes=r.bytesReceived;}});
       var playing=S.audio&&!S.audio.paused;
       $('pAud').textContent='Audio: '+Math.round(S.bytes/1024)+' kB recibidos · '+(playing?'reproduciendo':'en pausa');
     }).catch(function(){});
   }
 }
 function renderParent(){
-  var linked=S.connected||S.lostOn,pp=!!getPair('parent');
-  show('pMain',linked);show('pPair',!linked);show('pNew',!pp);show('pKnown',pp);
-  $('pDot').className='dot '+(S.lostOn?'warn':'ok');
-  $('pStatus').textContent=S.lostOn?'Sin señal del bebé':'Conectado · escuchando';
+  var pp=!!getPair('parent'),linked=S.connected||S.lostOn;
+  show('pMain',pp||linked);show('pPair',!pp&&!linked);
 }
 
 /* ---------- interfaz común ---------- */
 function render(){
   var bp=!!getPair('baby');
   show('bPair',!S.connected);show('bNew',!bp);show('bKnown',bp);
-  $('bKnownTxt').textContent=S.mic?'Esperando al móvil de padres. Se conectarán solos.':'Pulsa Activar micrófono y se conectará solo con el móvil de padres.';
-  var mb=$('micBtn');
-  if(!S.mic){mb.innerHTML='Activar<br>micrófono';mb.setAttribute('aria-pressed','false');}
-  else if(!S.connected){mb.innerHTML='Micrófono<br>activo';mb.setAttribute('aria-pressed','true');}
-  else{mb.innerHTML=S.paused?'Reanudar':'Pausar';mb.setAttribute('aria-pressed',S.paused?'false':'true');}
+  $('bKnownTxt').textContent=S.mic?'Emparejado con un móvil de padres. Se conectarán solos.':'Emparejado con un móvil de padres. Pulsa el círculo y se conectará solo.';
+  var mb=$('micBtn'),tx=$('micTxt');
+  if(!S.mic){tx.textContent='Activar';mb.setAttribute('aria-pressed','false');}
+  else if(!S.connected){tx.textContent='Apagar';mb.setAttribute('aria-pressed','true');}
+  else{tx.textContent=S.paused?'Reanudar':'Pausar';mb.setAttribute('aria-pressed',S.paused?'false':'true');}
   renderParent();
 }
 function setMode(m){
-  S.mode=m;var baby=m==='baby';
-  $('tabBaby').setAttribute('aria-selected',baby);$('tabParent').setAttribute('aria-selected',!baby);
-  show('baby',baby);show('parent',!baby);
-  try{localStorage.setItem('vb-mode',m);}catch(e){}
+  S.mode=m;
+  show('picker',!m);show('baby',m==='baby');show('parent',m==='parent');
+  show('gear',!!m);show('setBaby',m==='baby');show('setParent',m==='parent');
+  if(m){try{localStorage.setItem('vb-mode',m);}catch(e){}}
   render();
 }
 function init(){
-  build($('bMeter'));build($('pMeter'));
   if(!window.RTCPeerConnection||!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.crypto||!crypto.subtle){
     $('support').textContent='Este navegador no permite micrófono o conexión directa. Abre la página con Safari desde el enlace https de GitHub Pages.';
   }
@@ -796,16 +844,26 @@ function init(){
       if(S.awake){keepAwake();}else if(S.wake){try{S.wake.release();}catch(e){}S.wake=null;}
     });
   });
-  ['bRepair','pRepair','lostRepair','pForget'].forEach(function(id){$(id).addEventListener('click',forget);});
+  ['bRepair','pRepair','lostRepair'].forEach(function(id){$(id).addEventListener('click',forget);});
   document.addEventListener('pointerdown',touch);
   wireLog('b');wireLog('p');
   $('pHistBox').addEventListener('toggle',function(){if(this.open)renderHist();});
+  $('verTxt').textContent='Versión '+VERSION;
   if(!TEST_LOG)document.querySelectorAll('.tlog').forEach(function(e){e.classList.add('hide');});
-  $('tabBaby').addEventListener('click',function(){setMode('baby');});
-  $('tabParent').addEventListener('click',function(){setMode('parent');});
+  $('pickBaby').addEventListener('click',function(){setMode('baby');});
+  $('pickParent').addEventListener('click',function(){setMode('parent');});
+  $('gear').addEventListener('click',function(){show('sheet',true);});
+  $('sheetClose').addEventListener('click',function(){show('sheet',false);});
+  $('pSearchBtn').addEventListener('click',function(){S.searchPaused=false;S.searchT=Date.now();});
+  $('changeRole').addEventListener('click',function(){
+    if(!confirm('¿Cambiar el rol de este móvil? Se desconectará.'))return;
+    if(S.mic)stopMic();else resetLink();
+    try{localStorage.removeItem('vb-mode');}catch(e){}
+    show('sheet',false);setMode(null);
+  });
   setInterval(babyTick,100);setInterval(parentTick,200);
-  var m='baby';try{m=localStorage.getItem('vb-mode')||'baby';}catch(e){}
-  setMode(m==='parent'?'parent':'baby');
+  var m=null;try{m=localStorage.getItem('vb-mode');}catch(e){}
+  setMode(m==='parent'||m==='baby'?m:null);
   tlog(S.mode==='baby'?'baby':'parent',{k:'pagina',d:'abierta v'+VERSION});
 }
 init();

@@ -18,11 +18,12 @@ Un solo archivo (`index.html`) que convierte dos móviles en un vigilabebés. Si
 Los dos móviles deben estar en el mismo WiFi y con internet (solo para encontrarse).
 
 **La primera vez (con PIN):**
-1. **Móvil del bebé:** pestaña *Móvil del bebé* → **Crear PIN** (acepta el permiso del micrófono). Aparece un PIN de 6 cifras.
-2. **Móvil de padres:** pestaña *Móvil de padres* → escribe el PIN → **Conectar** (acepta el permiso del micrófono; solo sirve para que Safari use la red local, no graba nada).
+0. La primera vez que abres la página en cada móvil, elige **Móvil del bebé** o **Móvil de padres** (se recuerda; se cambia en *Ajustes → Este móvil*).
+1. **Móvil del bebé:** pulsa **Crear PIN** (acepta el permiso del micrófono). Aparece un PIN de 6 cifras.
+2. **Móvil de padres:** escribe el PIN → **Conectar** (acepta el permiso del micrófono; solo sirve para que Safari use la red local, no graba nada).
 3. En unos segundos conectan. Los dos móviles guardan un secreto largo y el PIN ya no hace falta.
 
-**Después (sin PIN):** el móvil de padres busca solo al bebé. En el del bebé, abre la página y pulsa **Activar micrófono**: se conectan solos. Si se corta el WiFi o se cierra una página, se reconectan solos en cuanto vuelve.
+**Después (sin PIN):** el móvil de padres busca solo al bebé. Si en 10 minutos no lo encuentra (y nunca se conectó en esa sesión), deja de buscar para ahorrar batería y muestra **Buscar de nuevo**; también vuelve a buscar al reabrir la página. En el del bebé, abre la página y pulsa el círculo (**Activar**): se conectan solos. Si se corta el WiFi o se cierra una página, se reconectan solos en cuanto vuelve.
 
 **Emparejar con otro móvil:** en *Ajustes* de cualquiera de los dos, pulsa **Emparejar con otro móvil**. Olvida el emparejamiento en los dos (si están conectados) y vuelve a pedir un PIN. Si no estaban conectados, hay que pulsarlo también en el otro.
 
